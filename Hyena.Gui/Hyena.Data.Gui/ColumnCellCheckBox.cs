@@ -58,10 +58,9 @@ namespace Hyena.Data.Gui
             if (context.State == StateType.Normal && last_hover_bound == BoundObjectParent) {
                 context.State = StateType.Prelight;
             }
-
-            Style.PaintCheck (context.Widget.Style, context.Context, context.State,
-                Value ? ShadowType.In : ShadowType.Out,
-                context.Widget, "cellcheck", x, y, Size, Size);
+			context.Widget.StyleContext.State = (Value ? StateFlags.Active : StateFlags.Normal);
+			//"cellcheck"
+			Gtk.Render.Check (context.Widget.StyleContext, context.Context, x, y, Size, Size);
         }
 
         private object last_pressed_bound;
