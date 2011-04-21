@@ -54,7 +54,7 @@ namespace Hyena.Widgets
 
         protected void Construct (Widget buttonWidget, Menu menu, bool showArrow)
         {
-            WidgetFlags |= WidgetFlags.NoWindow;
+            HasWindow = false;
 
             button_widget = buttonWidget;
             Menu = menu;
@@ -121,9 +121,16 @@ namespace Hyena.Widgets
             set { alignment.Visible = value; }
         }
 
-        protected override void OnSizeRequested (ref Requisition requisition)
+        protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
         {
-            requisition = size_widget.SizeRequest ();
+            var requisition = size_widget.SizeRequest ();
+            minimum_height = natural_height = requisition.Height;
+        }
+
+        protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+        {
+            var requisition = size_widget.SizeRequest ();
+            minimum_width = natural_width = requisition.Width;
         }
 
         protected override void OnSizeAllocated (Rectangle allocation)
@@ -155,10 +162,10 @@ namespace Hyena.Widgets
         private void PositionMenu (Menu menu, out int x, out int y, out bool push_in)
         {
             Gtk.Requisition menu_req = menu.SizeRequest ();
-            int monitor_num = Screen.GetMonitorAtWindow (GdkWindow);
+            int monitor_num = Screen.GetMonitorAtWindow (Window);
             Gdk.Rectangle monitor = Screen.GetMonitorGeometry (monitor_num < 0 ? 0 : monitor_num);
 
-            GdkWindow.GetOrigin (out x, out y);
+            Window.GetOrigin (out x, out y);
 
             y += Allocation.Y;
             x += Allocation.X + (Direction == TextDirection.Ltr

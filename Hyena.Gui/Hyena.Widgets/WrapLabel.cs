@@ -40,7 +40,7 @@ namespace Hyena.Widgets
 
         public WrapLabel ()
         {
-            WidgetFlags |= WidgetFlags.NoWindow;
+            HasWindow = false;
         }
 
         private void CreateLayout ()
@@ -83,7 +83,7 @@ namespace Hyena.Widgets
 
         protected override void OnRealized ()
         {
-            GdkWindow = Parent.GdkWindow;
+            Window = Parent.Window;
             base.OnRealized ();
         }
 
@@ -100,16 +100,16 @@ namespace Hyena.Widgets
             base.OnSizeAllocated (allocation);
         }
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
-            if (evnt.Window == GdkWindow) {
+            if (CairoHelper.ShouldDrawWindow (cr, Window)) {
                 // Center the text vertically
                 int lw, lh;
                 layout.GetPixelSize (out lw, out lh);
                 int y = Allocation.Y + (Allocation.Height - lh) / 2;
 
-                Gtk.Style.PaintLayout (Style, GdkWindow, State, false,
-                    evnt.Area, this, null, Allocation.X, y, layout);
+                Gtk.Style.PaintLayout (Style, cr, State, false,
+                    this, null, Allocation.X, y, layout);
             }
 
             return true;

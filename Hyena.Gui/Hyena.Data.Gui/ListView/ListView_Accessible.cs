@@ -80,7 +80,7 @@ namespace Hyena.Data.Gui
                 return rectangle;
 
             int origin_x, origin_y;
-            GdkWindow.GetPosition (out origin_x, out origin_y);
+            Window.GetPosition (out origin_x, out origin_y);
 
             rectangle.X += origin_x;
             rectangle.Y += origin_y;
@@ -109,7 +109,7 @@ namespace Hyena.Data.Gui
                 return rectangle;
 
             int origin_x, origin_y;
-            GdkWindow.GetPosition (out origin_x, out origin_y);
+            Window.GetPosition (out origin_x, out origin_y);
 
             rectangle.X += origin_x;
             rectangle.Y += origin_y;
@@ -122,7 +122,7 @@ namespace Hyena.Data.Gui
             int origin_x = 0;
             int origin_y = 0;
             if (coord_type == Atk.CoordType.Screen)
-                GdkWindow.GetPosition (out origin_x, out origin_y);
+                Window.GetPosition (out origin_x, out origin_y);
 
             x = x - ListAllocation.X - origin_x;
             y = y - ListAllocation.Y - origin_y;

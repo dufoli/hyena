@@ -82,13 +82,14 @@ namespace Hyena.Widgets
             pulsator.Pulse += delegate { QueueDraw (); };
         }
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
             if (!pulsator.IsPulsing) {
-                return base.OnExposeEvent (evnt);
+                return base.OnDrawn (cr);
             }
 
-            Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow);
+            cr.Save ();
+            CairoHelper.TransformToWindow (cr, this, Window);
 
             double x = Allocation.X + Allocation.Width / 2;
             double y = Allocation.Y + Allocation.Height / 2;
@@ -108,8 +109,8 @@ namespace Hyena.Widgets
             cr.Fill ();
             fill.Destroy ();
 
-            CairoExtensions.DisposeContext (cr);
-            return base.OnExposeEvent (evnt);
+            cr.Restore ();
+            return base.OnDrawn (cr);
         }
 
         public void StartPulsing ()

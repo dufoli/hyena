@@ -58,8 +58,8 @@ namespace Hyena.Widgets
             if (handler != null) {
                 TextInsertedArgs raise_args = new TextInsertedArgs ();
                 raise_args.Args = new object [] {
-                    args.Text,
-                    args.Length,
+                    args.NewText,
+                    args.NewTextLength,
                     args.Pos.Offset
                 };
                 handler (this, raise_args);

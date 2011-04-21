@@ -128,21 +128,15 @@ namespace Hyena.Widgets
             QueueDraw ();
         }
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
-            if (!IsDrawable) {
-                return false;
-            }
+            cr.Save ();
+            CairoHelper.TransformToWindow (cr, this, Window);
 
-            Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window);
-
-            try {
-                Gdk.Color color = Style.Background (StateType.Normal);
-                theme.DrawFrame (cr, Allocation, CairoExtensions.GdkColorToCairoColor (color));
-                return base.OnExposeEvent (evnt);
-            } finally {
-                CairoExtensions.DisposeContext (cr);
-            }
+            Gdk.Color color = Style.Background (StateType.Normal);
+            theme.DrawFrame (cr, Allocation, CairoExtensions.GdkColorToCairoColor (color));
+            cr.Restore ();
+            return base.OnDrawn (cr);
         }
 
         private bool changing_style = false;

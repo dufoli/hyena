@@ -109,7 +109,7 @@ namespace Hyena.Gui
         [GLib.ConnectBefore]
         private void OnTextInserted (object o, TextInsertedArgs args)
         {
-            undo_manager.AddUndoAction (new EditableInsertAction (editable, args.Position, args.Text, args.Length));
+            undo_manager.AddUndoAction (new EditableInsertAction (editable, args.Position, args.NewText, args.NewTextLength));
         }
 
         private void OnPopulatePopup (object o, PopulatePopupArgs args)

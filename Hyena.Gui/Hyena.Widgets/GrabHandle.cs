@@ -51,10 +51,10 @@ namespace Hyena.Widgets
             EnterNotifyEvent += (o, a) => Inside = true;
             LeaveNotifyEvent += (o, a) => Inside = false;
 
-            da.ExposeEvent += (o, a) => {
+            da.Drawn += (o, a) => {
                 if (da.IsDrawable) {
-                    Gtk.Style.PaintHandle (da.Style, da.GdkWindow, da.State, ShadowType.In,
-                        a.Event.Area, this, "entry", 0, 0, da.Allocation.Width, da.Allocation.Height, Orientation);
+                    Gtk.Style.PaintHandle (da.Style, a.Cr, da.State, ShadowType.In,
+                        this, "entry", 0, 0, da.Allocation.Width, da.Allocation.Height, Orientation);
                 }
             };
         }
@@ -74,14 +74,14 @@ namespace Hyena.Widgets
         private bool Inside {
             set {
                 inside = value;
-                GdkWindow.Cursor = dragging || inside ? resize_cursor : null;
+                Window.Cursor = dragging || inside ? resize_cursor : null;
             }
         }
 
         private bool Dragging {
             set {
                 dragging = value;
-                GdkWindow.Cursor = dragging || inside ? resize_cursor : null;
+                Window.Cursor = dragging || inside ? resize_cursor : null;
             }
         }
 

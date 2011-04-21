@@ -36,7 +36,7 @@ using Hyena.Gui.Theming;
 
 namespace Hyena.Widgets
 {
-    public class RoundedFrame : Bin
+    public class RoundedFrame : Bin, Gtk.ScrollableImplementor
     {
         private Theme theme;
         protected Theme Theme {
@@ -95,8 +95,21 @@ namespace Hyena.Widgets
             frame_width = (int)theme.Context.Radius + 1;
         }
 
-        protected override void OnSizeRequested (ref Requisition requisition)
+        protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
         {
+            var requisition = SizeRequested ();
+            minimum_height = natural_height = requisition.Height;
+        }
+
+        protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+        {
+            var requisition = SizeRequested ();
+            minimum_width = natural_width = requisition.Width;
+        }
+
+        protected Requisition SizeRequested ()
+        {
+            var requisition = new Requisition ();
             if (child != null && child.Visible) {
                 // Add the child's width/height
                 Requisition child_requisition = child.SizeRequest ();
@@ -110,6 +123,7 @@ namespace Hyena.Widgets
             // Add the frame border
             requisition.Width += ((int)BorderWidth + frame_width) * 2;
             requisition.Height += ((int)BorderWidth + frame_width) * 2;
+            return requisition;
         }
 
         protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -134,33 +148,25 @@ namespace Hyena.Widgets
             child.SizeAllocate (child_allocation);
         }
 
-        protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
+        /*protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
         {
             // This is to satisfy the gtk_widget_set_scroll_adjustments
             // inside of GtkScrolledWindow so it doesn't complain about
             // its child not being scrollable.
-        }
+        }*/
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
-            if (!IsDrawable) {
-                return false;
-            }
+            CairoHelper.TransformToWindow (cr, this, Window);
 
-            Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window);
-
-            try {
-                DrawFrame (cr, evnt.Area);
-                if (child != null) {
-                    PropagateExpose (child, evnt);
-                }
-                return false;
-            } finally {
-                CairoExtensions.DisposeContext (cr);
+            DrawFrame (cr);
+            if (child != null) {
+                PropagateDraw (child, cr);
             }
+            return false;
         }
 
-        private void DrawFrame (Cairo.Context cr, Gdk.Rectangle clip)
+        private void DrawFrame (Cairo.Context cr)
         {
             int x = child_allocation.X - frame_width;
             int y = child_allocation.Y - frame_width;

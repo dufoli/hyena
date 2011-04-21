@@ -116,7 +116,6 @@ namespace Hyena.Gui
             double blB = mB * blendRatio;
 
             Gdk.Color color = new Gdk.Color ((byte)blR, (byte)blG, (byte)blB);
-            Gdk.Colormap.System.AllocColor (ref color, true, true);
             return color;
         }
 
@@ -170,11 +169,13 @@ namespace Hyena.Gui
             }
         }
 
+        [Obsolete ("Use Gtk.Global.ShowUri() from gtk# 3.x")]
         public static bool ShowUri (string uri)
         {
             return ShowUri (null, uri);
         }
 
+        [Obsolete ("Use Gtk.Global.ShowUri() from gtk# 3.x")]
         public static bool ShowUri (Gdk.Screen screen, string uri)
         {
             return ShowUri (screen, uri, Gtk.Global.CurrentEventTime);
@@ -183,20 +184,10 @@ namespace Hyena.Gui
         [System.Runtime.InteropServices.DllImport ("libgtk-win32-2.0-0.dll")]
         private static extern unsafe bool gtk_show_uri (IntPtr screen, IntPtr uri, uint timestamp, out IntPtr error);
 
+        [Obsolete ("Use Gtk.Global.ShowUri() from gtk# 3.x")]
         public static bool ShowUri (Gdk.Screen screen, string uri, uint timestamp)
         {
-            var native_uri = GLib.Marshaller.StringToPtrGStrdup (uri);
-            var native_error = IntPtr.Zero;
-            
-            try {
-                return gtk_show_uri (screen == null ? IntPtr.Zero : screen.Handle,
-                    native_uri, timestamp, out native_error);
-            } finally {
-                GLib.Marshaller.Free (native_uri);
-                if (native_error != IntPtr.Zero) {
-                    throw new GLib.GException (native_error);
-                }
-            }
+            return Gtk.Global.ShowUri (screen, uri, timestamp);
         }
     }
 }

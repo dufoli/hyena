@@ -54,7 +54,7 @@ namespace Hyena.Widgets
             Modal = true;
 
             Frame frame = new Frame ();
-            frame.Shadow = ShadowType.EtchedIn;
+            frame.ShadowType = ShadowType.EtchedIn;
             Add (frame);
 
             hbox = new HBox () { Spacing = 6 };
@@ -89,7 +89,7 @@ namespace Hyena.Widgets
             text_entry.KeyPressEvent += (o, a) => OnKeyPressed (a);
 
             text_entry.Changed += (o, a) => {
-                if (GdkWindow.IsVisible) {
+                if (Window.IsVisible) {
                     OnChanged (a);
                 }
             };
@@ -132,10 +132,10 @@ namespace Hyena.Widgets
             set { reset_when_hiding = value; }
         }
 
-        public override void Dispose ()
+        protected override void Dispose (bool disposing)
         {
             text_entry.Dispose ();
-            base.Dispose ();
+            base.Dispose (disposing);
         }
 
         public new void GrabFocus ()
@@ -157,7 +157,8 @@ namespace Hyena.Widgets
             Gtk.Requisition popup_req;
 
             widget_window.GetOrigin (out widget_x, out widget_y);
-            widget_window.GetSize (out widget_width, out widget_height);
+            widget_width = widget_window.Width;
+            widget_height = widget_window.Height;
 
             popup_req = Requisition;
 
@@ -234,10 +235,10 @@ namespace Hyena.Widgets
             return base.OnFocusOutEvent (evnt);
         }
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
             InitializeDelayedHide ();
-            return base.OnExposeEvent (evnt);
+            return base.OnDrawn (cr);
         }
 
         protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)

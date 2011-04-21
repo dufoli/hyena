@@ -59,9 +59,9 @@ namespace Hyena.Data.Gui
                 context.State = StateType.Prelight;
             }
 
-            Style.PaintCheck (context.Widget.Style, context.Drawable, context.State,
+            Style.PaintCheck (context.Widget.Style, context.Context, context.State,
                 Value ? ShadowType.In : ShadowType.Out,
-                context.Clip, context.Widget, "cellcheck", x, y, Size, Size);
+                context.Widget, "cellcheck", x, y, Size, Size);
         }
 
         private object last_pressed_bound;
