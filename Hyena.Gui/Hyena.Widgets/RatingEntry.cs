@@ -161,7 +161,7 @@ namespace Hyena.Widgets
             attributes.Y = Allocation.Y;
             attributes.Width = Allocation.Width;
             attributes.Height = Allocation.Height;
-            attributes.Wclass = Gdk.WindowWindowClass.InputOnly;
+            attributes.Wclass = Gdk.WindowWindowClass.Only;
             attributes.EventMask = (int)(
                 Gdk.EventMask.PointerMotionMask |
                 Gdk.EventMask.EnterNotifyMask |
@@ -204,7 +204,7 @@ namespace Hyena.Widgets
 
         protected override void OnUnmapped ()
         {
-            WidgetFlags &= ~WidgetFlags.Mapped;
+            IsMapped = false;
             event_window.Hide ();
         }
 
