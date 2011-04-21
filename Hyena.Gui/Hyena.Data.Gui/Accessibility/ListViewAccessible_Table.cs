@@ -127,7 +127,7 @@ namespace Hyena.Data.Gui.Accessibility
 
 // Ensure https://bugzilla.novell.com/show_bug.cgi?id=512477 is fixed
 #if ENABLE_ATK
-		public int GetSelectedRows (out int row) { row = 0; return 0; }
+        public int GetSelectedRows (out int row) { row = 0; return 0; }
         public int GetSelectedColumns (out int cols) { cols = 0; return 0; }
 #else
         public int GetSelectedRows (out int row) { row = 0; return 0; }
