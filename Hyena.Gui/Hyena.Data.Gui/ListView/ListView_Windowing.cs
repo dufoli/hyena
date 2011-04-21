@@ -156,12 +156,11 @@ namespace Hyena.Data.Gui
 
         protected Requisition SizeRequested ()
         {
-            var requisition = new Requisition ();
-
             // TODO give the minimum height of the header
             if (Theme == null) {
-                return requisition;
+                return Requisition.Zero;
             }
+            var requisition = new Requisition ();
             requisition.Width = Theme.TotalBorderWidth * 2;
             requisition.Height = HeaderHeight + Theme.TotalBorderWidth * 2;
             return requisition;

@@ -463,16 +463,13 @@ namespace Hyena.Widgets
         {
             new RatingAccessibleFactory ();
             Atk.Global.DefaultRegistry.SetFactoryType ((GLib.GType)typeof (RatingEntry), (GLib.GType)typeof (RatingAccessibleFactory));
-        }
+            CreateAccessibleHandler = (obj) => {
+                return new RatingAccessible (obj);
+            };
+            GetAccessibleTypeHandler = () => {
+                return RatingAccessible.GType;
+            };
 
-        protected override Atk.Object OnCreateAccessible (GLib.Object obj)
-        {
-            return new RatingAccessible (obj);
-        }
-
-        protected override GLib.GType OnGetAccessibleType ()
-        {
-            return RatingAccessible.GType;
         }
     }
 #endif

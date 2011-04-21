@@ -166,19 +166,15 @@ namespace Hyena.Data.Gui
         {
             new ListViewAccessibleFactory<T> ();
             Atk.Global.DefaultRegistry.SetFactoryType ((GLib.GType)typeof (ListView<T>), (GLib.GType)typeof (ListViewAccessibleFactory<T>));
-        }
-
-        protected override Atk.Object OnCreateAccessible (GLib.Object obj)
-        {
-            Log.InformationFormat ("Creating Accessible for {0}", obj);
-            var accessible = new ListViewAccessible<T> (obj);
-            (obj as ListView<T>).accessible = accessible;
-            return accessible;
-        }
-
-        protected override GLib.GType OnGetAccessibleType ()
-        {
-            return ListViewAccessible<T>.GType;
+            CreateAccessibleHandler = (obj) => {
+                Log.InformationFormat ("Creating Accessible for {0}", obj);
+                var accessible = new ListViewAccessible<T> (obj);
+                (obj as ListView<T>).accessible = accessible;
+                return accessible;
+            };
+            GetAccessibleTypeHandler = ()=> {
+                return ListViewAccessible<T>.GType;
+            };
         }
     }
 #endif
