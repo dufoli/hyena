@@ -627,7 +627,8 @@ namespace Hyena.Widgets
             SetSizeRequest (350, -1);
 
             Gdk.Geometry limits = new Gdk.Geometry ();
-            limits.MinWidth = SizeRequest ().Width;
+            int nat_width;
+            GetPreferredWidth (out limits.MinWidth, out nat_width);
             limits.MaxWidth = Gdk.Screen.Default.Width;
             limits.MinHeight = -1;
             limits.MaxHeight = -1;

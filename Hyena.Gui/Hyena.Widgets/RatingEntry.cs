@@ -274,10 +274,15 @@ namespace Hyena.Widgets
 
             if (HasFrame) {
                 int y_mid = (int)Math.Round ((Allocation.Height - renderer.Height) / 2.0);
-                Gtk.Style.PaintFlatBox (Style, cr, State, ShadowType.None, this, "entry",
-                    Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
-                Gtk.Style.PaintShadow (Style, cr, State, ShadowType.In,
-                    this, "entry", Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                this.StyleContext.State = StateFlags.Normal;
+                Gtk.Render.Frame (StyleContext, cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                Gtk.Render.Background (StyleContext, cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                //Gtk.Style.PaintFlatBox (Style, cr, State, ShadowType.None, this, "entry",
+                //    Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                this.StyleContext.State = StateFlags.Active;
+                Gtk.Render.Frame (StyleContext, cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                //Gtk.Style.PaintShadow (Style, cr, State, ShadowType.In,
+                //    this, "entry", Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
             }
 
             CairoHelper.TransformToWindow (cr, this, Window);

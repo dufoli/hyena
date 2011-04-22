@@ -53,8 +53,13 @@ namespace Hyena.Widgets
 
             da.Drawn += (o, a) => {
                 if (da.IsDrawable) {
-                    Gtk.Style.PaintHandle (da.Style, a.Cr, da.State, ShadowType.In,
-                        this, "entry", 0, 0, da.Allocation.Width, da.Allocation.Height, Orientation);
+                    //TODO: check if transform is needed for render funct, but seems not according to this example:
+                    //http://developer.gnome.org/gtk3/stable/GtkStyleContext.html#id545216
+                    //CairoHelper.TransformToWindow (a.Cr, da, da.Window);
+                    da.StyleContext.State = StateFlags.Active;
+                    Gtk.Render.Handle (da.StyleContext, a.Cr, 0, 0, da.Allocation.Width, da.Allocation.Height);
+                    //Gtk.Style.PaintHandle (da.Style, a.Cr, da.State, ShadowType.In,
+                    //    this, "entry", 0, 0, da.Allocation.Width, da.Allocation.Height, Orientation);
                 }
             };
         }

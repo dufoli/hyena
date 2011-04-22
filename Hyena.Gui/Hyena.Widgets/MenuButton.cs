@@ -123,14 +123,12 @@ namespace Hyena.Widgets
 
         protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
         {
-            var requisition = size_widget.SizeRequest ();
-            minimum_height = natural_height = requisition.Height;
+            size_widget.GetPreferredHeight (out minimum_height, out natural_height);
         }
 
         protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
         {
-            var requisition = size_widget.SizeRequest ();
-            minimum_width = natural_width = requisition.Width;
+            size_widget.GetPreferredHeight (out minimum_width, out natural_width);
         }
 
         protected override void OnSizeAllocated (Rectangle allocation)
@@ -161,7 +159,8 @@ namespace Hyena.Widgets
 
         private void PositionMenu (Menu menu, out int x, out int y, out bool push_in)
         {
-            Gtk.Requisition menu_req = menu.SizeRequest ();
+            Gtk.Requisition menu_req, nat_req;
+            menu.GetPreferredSize (menu_req, nat_req);
             int monitor_num = Screen.GetMonitorAtWindow (Window);
             Gdk.Rectangle monitor = Screen.GetMonitorGeometry (monitor_num < 0 ? 0 : monitor_num);
 
