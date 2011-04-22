@@ -82,8 +82,9 @@ namespace Hyena.Widgets
                 height = Allocation.Height;
 
                 ShadowType shadow_type = (ShadowType)StyleGetProperty("selected-shadow-type");
-                Gtk.Style.PaintBox(Style, args.Cr, StateType.Prelight, shadow_type,
-                    widget, "menuitem", x, y, width, height);
+                Gtk.Render.Background (StyleContext, args.Cr, x, y, width, height);
+                //Gtk.Style.PaintBox(Style, args.Cr, StateType.Prelight, shadow_type,
+                //    widget, "menuitem", x, y, width, height);
             } else {
 
                 args.Cr.Save ();
@@ -106,9 +107,9 @@ namespace Hyena.Widgets
                 y = Parent.Allocation.Y - widget.Allocation.Y;
                 width = Parent.Allocation.Width;
                 height = Parent.Allocation.Height;
-
-                Gtk.Style.PaintBox(Style, args.Cr, StateType.Normal, ShadowType.Out,
-                    widget, "menu", x, y, width, height);
+                Gtk.Render.Background (StyleContext, args.Cr, x, y, width, height);
+                //Gtk.Style.PaintBox(Style, args.Cr, StateType.Normal, ShadowType.Out,
+                //    widget, "menu", x, y, width, height);
             }
         }
 

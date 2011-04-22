@@ -146,7 +146,8 @@ namespace Hyena.Widgets
         {
             var requisition = new Requisition ();
             if (Widget != null) {
-                Requisition req = Widget.SizeRequest ();
+                Requisition req, nat;
+                Widget.GetPreferredSize (req, nat);
                 widget_alloc.Width = req.Width;
                 widget_alloc.Height = req.Height;
             }

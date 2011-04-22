@@ -232,7 +232,7 @@ namespace Hyena.Gui
 
             #pragma warning disable 0612
             //widget.SetUposition (x, y);
-			widget.SetAllocation (new Gdk.Rectangle (x, y, w, h));
+            widget.SetAllocation (new Gdk.Rectangle (x, y, w, h));
             #pragma warning restore 0612
 
             if (setSize) {
