@@ -40,9 +40,9 @@ namespace Hyena.Gui
             SetSizeRequest (512, 512);
         }
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
-            Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window);
+            CairoHelper.TransformToWindow (cr, this, Window);
 
             double step_width = Allocation.Width / (double)steps;
             double step_height = Allocation.Height / (double)steps;
@@ -74,7 +74,6 @@ namespace Hyena.Gui
                 }
             }
 
-            CairoExtensions.DisposeContext (cr);
             return true;
         }
 

@@ -51,15 +51,17 @@ dnl Mono and gmcs
 SHAMROCK_CHECK_MONO_MODULE(1.9.1)
 SHAMROCK_FIND_MONO_2_0_COMPILER
 SHAMROCK_FIND_MONO_RUNTIME
+
+
 SHAMROCK_CHECK_MONO_2_0_GAC_ASSEMBLIES([	
-	Mono.Cairo
 	Mono.Posix
 	ICSharpCode.SharpZipLib
-])
+])dnl FIXME:seems like cairo-sharp hasn't got .pc files yet: cairo-sharp
+
 
 dnl package checks, common for all configs
-PKG_CHECK_MODULES([GTKSHARP], gtk-sharp-2.0 >= 2.12.10)
-PKG_CHECK_MODULES([GLIBSHARP], glib-sharp-2.0)
+PKG_CHECK_MODULES([GTKSHARP], [gtk-sharp-3.0])
+PKG_CHECK_MODULES([GLIBSHARP], [glib-sharp-3.0])
 
 AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)
 AM_CONDITIONAL(HYENA_PKG_CONFIG, true)

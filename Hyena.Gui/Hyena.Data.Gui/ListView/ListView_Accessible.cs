@@ -76,7 +76,7 @@ namespace Hyena.Data.Gui
                 return rectangle;
 
             int origin_x, origin_y;
-            GdkWindow.GetPosition (out origin_x, out origin_y);
+            Window.GetPosition (out origin_x, out origin_y);
 
             rectangle.X += origin_x;
             rectangle.Y += origin_y;
@@ -105,7 +105,7 @@ namespace Hyena.Data.Gui
                 return rectangle;
 
             int origin_x, origin_y;
-            GdkWindow.GetPosition (out origin_x, out origin_y);
+            Window.GetPosition (out origin_x, out origin_y);
 
             rectangle.X += origin_x;
             rectangle.Y += origin_y;
@@ -118,7 +118,7 @@ namespace Hyena.Data.Gui
             int origin_x = 0;
             int origin_y = 0;
             if (coord_type == Atk.CoordType.Screen)
-                GdkWindow.GetPosition (out origin_x, out origin_y);
+                Window.GetPosition (out origin_x, out origin_y);
 
             x = x - ListAllocation.X - origin_x;
             y = y - ListAllocation.Y - origin_y;
@@ -159,19 +159,15 @@ namespace Hyena.Data.Gui
         {
             new ListViewAccessibleFactory<T> ();
             Atk.Global.DefaultRegistry.SetFactoryType ((GLib.GType)typeof (ListView<T>), (GLib.GType)typeof (ListViewAccessibleFactory<T>));
-        }
-
-        protected override Atk.Object OnCreateAccessible (GLib.Object obj)
-        {
-            Log.InformationFormat ("Creating Accessible for {0}", obj);
-            var accessible = new ListViewAccessible<T> (obj);
-            (obj as ListView<T>).accessible = accessible;
-            return accessible;
-        }
-
-        protected override GLib.GType OnGetAccessibleType ()
-        {
-            return ListViewAccessible<T>.GType;
+            CreateAccessibleHandler = (obj) => {
+                Log.InformationFormat ("Creating Accessible for {0}", obj);
+                var accessible = new ListViewAccessible<T> (obj);
+                (obj as ListView<T>).accessible = accessible;
+                return accessible;
+            };
+            GetAccessibleTypeHandler = ()=> {
+                return ListViewAccessible<T>.GType;
+            };
         }
     }
 }

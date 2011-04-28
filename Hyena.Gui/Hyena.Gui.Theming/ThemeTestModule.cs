@@ -80,22 +80,17 @@ namespace Hyena.Gui.Theming
                 theme.Context.Radius = 10;
             }
 
-            protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+            protected override bool OnDrawn (Cairo.Context cr)
             {
-                Cairo.Context cr = null;
-                try {
-                    var alloc = new Gdk.Rectangle () {
-                        X = Allocation.X,
-                        Y = Allocation.Y,
-                        Width = Allocation.Width,
-                        Height = Allocation.Height
-                    };
-                    cr = Gdk.CairoHelper.Create (evnt.Window);
-                    theme.DrawListBackground (cr, alloc, true);
-                    theme.DrawFrameBorder (cr, alloc);
-                } finally {
-                    CairoExtensions.DisposeContext (cr);
-                }
+                var alloc = new Gdk.Rectangle () {
+                    X = Allocation.X,
+                    Y = Allocation.Y,
+                    Width = Allocation.Width,
+                    Height = Allocation.Height
+                };
+                CairoHelper.TransformToWindow (cr, this, Window);
+                theme.DrawListBackground (cr, alloc, true);
+                theme.DrawFrameBorder (cr, alloc);
                 return true;
             }
         }

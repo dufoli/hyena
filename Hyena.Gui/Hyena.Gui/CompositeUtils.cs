@@ -45,35 +45,6 @@ namespace Hyena.Gui
         [DllImport ("libgdk-win32-2.0-0.dll")]
         private static extern IntPtr gdk_screen_get_rgba_colormap (IntPtr screen);
 
-        public static Colormap GetRgbaColormap (Screen screen)
-        {
-            try {
-                IntPtr raw_ret = gdk_screen_get_rgba_colormap (screen.Handle);
-                Gdk.Colormap ret = GLib.Object.GetObject(raw_ret) as Gdk.Colormap;
-                return ret;
-            } catch {
-                Gdk.Visual visual = Gdk.Visual.GetBestWithDepth (32);
-                if (visual != null) {
-                    Gdk.Colormap cmap = new Gdk.Colormap (visual, false);
-                    return cmap;
-                }
-            }
-
-            return null;
-        }
-
-        public static bool SetRgbaColormap (Widget w)
-        {
-            Gdk.Colormap cmap = GetRgbaColormap (w.Screen);
-
-            if (cmap != null) {
-                w.Colormap = cmap;
-                return true;
-            }
-
-            return false;
-        }
-
         public static Visual GetRgbaVisual (Screen screen)
         {
             try {
@@ -144,7 +115,7 @@ namespace Hyena.Gui
 
         public static void SetWinOpacity (Gtk.Window win, double opacity)
         {
-            CompositeUtils.ChangeProperty (win.GdkWindow,
+            CompositeUtils.ChangeProperty (win.Window,
                 Atom.Intern ("_NET_WM_WINDOW_OPACITY", false),
                 Atom.Intern ("CARDINAL", false),
                 PropMode.Replace,
@@ -152,10 +123,10 @@ namespace Hyena.Gui
             );
         }
 
-        public static void InputShapeCombineMask (Widget w, Pixmap shape_mask, int offset_x, int offset_y)
+        /*public static void InputShapeCombineMask (Widget w, Pixmap shape_mask, int offset_x, int offset_y)
         {
             gtk_widget_input_shape_combine_mask (w.Handle, shape_mask == null ? IntPtr.Zero : shape_mask.Handle,
                 offset_x, offset_y);
-        }
+        }*/
     }
 }

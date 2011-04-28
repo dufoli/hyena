@@ -61,7 +61,7 @@ namespace Hyena.Widgets
 
         protected AnimatedBox (bool horizontal)
         {
-            WidgetFlags |= WidgetFlags.NoWindow;
+            HasWindow = false;
             this.horizontal = horizontal;
             stage.ActorStep += OnActorStep;
             border_stage.Iteration += OnBorderIteration;
@@ -184,8 +184,22 @@ namespace Hyena.Widgets
             PackStart (widget, duration, easing, blocking);
         }
 
-        protected override void OnSizeRequested (ref Requisition requisition)
+
+        protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
         {
+            var requisition = SizeRequested ();
+            minimum_height = natural_height = requisition.Height;
+        }
+
+        protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+        {
+            var requisition = SizeRequested ();
+            minimum_width = natural_width = requisition.Width;
+        }
+
+        protected Requisition SizeRequested ()
+        {
+            var requisition = new Requisition ();
             int width = 0;
             int height = 0;
 
@@ -196,7 +210,9 @@ namespace Hyena.Widgets
             }
 
             foreach (AnimatedWidget widget in Widgets) {
-                Requisition req = widget.SizeRequest ();
+                Requisition req, nat;
+                widget.GetPreferredSize (req, nat);
+
                 if (horizontal) {
                     width += req.Width;
                     height = Math.Max (height, req.Height);
@@ -208,6 +224,7 @@ namespace Hyena.Widgets
 
             requisition.Width = width;
             requisition.Height = height;
+            return requisition;
         }
 
         protected override void OnSizeAllocated (Rectangle allocation)

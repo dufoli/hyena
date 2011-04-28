@@ -53,10 +53,11 @@ namespace Hyena.Data.Gui
 
         protected override void OnRealized ()
         {
-            WidgetFlags |= WidgetFlags.Realized | WidgetFlags.NoWindow;
+            IsRealized = true;
+            HasWindow = false;
 
-            GdkWindow = Parent.GdkWindow;
-            cell_context.Drawable = GdkWindow;
+            Window = Parent.Window;
+            cell_context.Drawable = Window;
 
             WindowAttr attributes = new WindowAttr ();
             attributes.WindowType = Gdk.WindowType.Child;
@@ -64,7 +65,7 @@ namespace Hyena.Data.Gui
             attributes.Y = Allocation.Y;
             attributes.Width = Allocation.Width;
             attributes.Height = Allocation.Height;
-            attributes.Wclass = WindowClass.InputOnly;
+            attributes.Wclass = WindowWindowClass.Only;
             attributes.EventMask = (int)(
                 EventMask.PointerMotionMask |
                 EventMask.KeyPressMask |
@@ -77,7 +78,7 @@ namespace Hyena.Data.Gui
             WindowAttributesType attributes_mask =
                 WindowAttributesType.X | WindowAttributesType.Y | WindowAttributesType.Wmclass;
 
-            event_window = new Gdk.Window (GdkWindow, attributes, attributes_mask);
+            event_window = new Gdk.Window (Window, attributes, attributes_mask);
             event_window.UserData = Handle;
 
             OnDragSourceSet ();
@@ -88,7 +89,7 @@ namespace Hyena.Data.Gui
 
         protected override void OnUnrealized ()
         {
-            WidgetFlags &= ~WidgetFlags.Realized;
+            IsRealized = false;
 
             event_window.UserData = IntPtr.Zero;
             Hyena.Gui.GtkWorkarounds.WindowDestroy (event_window);
@@ -99,13 +100,13 @@ namespace Hyena.Data.Gui
 
         protected override void OnMapped ()
         {
-            WidgetFlags |= WidgetFlags.Mapped;
+            IsMapped = true;
             event_window.Show ();
         }
 
         protected override void OnUnmapped ()
         {
-            WidgetFlags &= ~WidgetFlags.Mapped;
+            IsMapped = false;
             event_window.Hide ();
         }
 
@@ -141,14 +142,28 @@ namespace Hyena.Data.Gui
             header_width = header_interaction_alloc.Width;
         }
 
-        protected override void OnSizeRequested (ref Requisition requisition)
+        protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
+        {
+            var requisition = SizeRequested ();
+            minimum_height = natural_height = requisition.Height;
+        }
+
+        protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+        {
+            var requisition = SizeRequested ();
+            minimum_width = natural_width = requisition.Width;
+        }
+
+        protected Requisition SizeRequested ()
         {
             // TODO give the minimum height of the header
             if (Theme == null) {
-                return;
+                return Requisition.Zero;
             }
+            var requisition = new Requisition ();
             requisition.Width = Theme.TotalBorderWidth * 2;
             requisition.Height = HeaderHeight + Theme.TotalBorderWidth * 2;
+            return requisition;
         }
 
         protected override void OnSizeAllocated (Rectangle allocation)

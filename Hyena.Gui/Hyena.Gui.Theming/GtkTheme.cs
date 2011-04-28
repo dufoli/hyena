@@ -48,14 +48,6 @@ namespace Hyena.Gui.Theming
             return CairoExtensions.AlphaBlend (text_color, background_color, 0.5);
         }
 
-        public static Gdk.Color GetGdkTextMidColor (Widget widget)
-        {
-            Cairo.Color color = GetCairoTextMidColor (widget);
-            Gdk.Color gdk_color = new Gdk.Color ((byte)(color.R * 255), (byte)(color.G * 255), (byte)(color.B * 255));
-            Gdk.Colormap.System.AllocColor (ref gdk_color, true, true);
-            return gdk_color;
-        }
-
         protected override void OnColorsRefreshed ()
         {
             base.OnColorsRefreshed ();

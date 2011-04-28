@@ -38,7 +38,7 @@ namespace Hyena.Query.Gui
     public class TimeSpanQueryValueEntry : QueryValueEntry
     {
         protected SpinButton spin_button;
-        protected ComboBox combo;
+        protected ComboBoxText combo;
         protected TimeSpanQueryValue query_value;
         private int set_combo = 1;
 
@@ -55,7 +55,7 @@ namespace Hyena.Query.Gui
             spin_button.SetRange (0.0, Double.MaxValue);
             Add (spin_button);
 
-            combo = ComboBox.NewText ();
+            combo = new ComboBoxText ();
             combo.AppendText (Catalog.GetString ("seconds"));
             combo.AppendText (Catalog.GetString ("minutes"));
             combo.AppendText (Catalog.GetString ("hours"));

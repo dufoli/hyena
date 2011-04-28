@@ -40,7 +40,7 @@ using Selection = Hyena.Collections.Selection;
 
 namespace Hyena.Data.Gui
 {
-    public partial class ListView<T> : ListViewBase
+    public partial class ListView<T> : ListViewBase, ScrollableImplementor
     {
         private enum KeyDirection {
             Press,
@@ -706,7 +706,7 @@ namespace Hyena.Data.Gui
             if (resizing_column_index >= 0) {
                 pressed_column_index = -1;
                 resizing_column_index = -1;
-                GdkWindow.Cursor = null;
+                Window.Cursor = null;
                 return true;
             }
 
@@ -801,7 +801,7 @@ namespace Hyena.Data.Gui
                 return true;
             }
 
-            GdkWindow.Cursor = header_interaction_alloc.Contains ((int)evnt.X, (int)evnt.Y) &&
+            Window.Cursor = header_interaction_alloc.Contains ((int)evnt.X, (int)evnt.Y) &&
                 (resizing_column_index >= 0 || GetColumnForResizeHandle (x) != null)
                 ? resize_x_cursor
                 : null;
@@ -827,7 +827,7 @@ namespace Hyena.Data.Gui
 
             OnDragScroll (OnDragHScrollTimeout, header_interaction_alloc.Width * 0.1, header_interaction_alloc.Width, x);
 
-            GdkWindow.Cursor = drag_cursor;
+            Window.Cursor = drag_cursor;
 
             Column swap_column = GetColumnAt (x);
 
@@ -871,7 +871,7 @@ namespace Hyena.Data.Gui
         protected override bool OnLeaveNotifyEvent (Gdk.EventCrossing evnt)
         {
             if (evnt.Mode == Gdk.CrossingMode.Normal) {
-                GdkWindow.Cursor = null;
+                Window.Cursor = null;
                 if (LayoutChildHandlesEvent (evnt, false)) {
                     return true;
                 }
@@ -919,7 +919,7 @@ namespace Hyena.Data.Gui
             if (pressed_column_index >= 0 && pressed_column_is_dragging) {
                 pressed_column_is_dragging = false;
                 pressed_column_index = -1;
-                GdkWindow.Cursor = null;
+                Window.Cursor = null;
                 QueueDirtyRegion ();
                 return true;
             }
@@ -1088,7 +1088,7 @@ namespace Hyena.Data.Gui
             }
         }
 
-        protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
+        /*protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
         {
             if (hadj == null || vadj == null) {
                 return;
@@ -1098,7 +1098,7 @@ namespace Hyena.Data.Gui
             vadj.ValueChanged += OnVadjustmentChanged;
 
             UpdateAdjustments (hadj, vadj);
-        }
+        }*/
 
 #endregion
 

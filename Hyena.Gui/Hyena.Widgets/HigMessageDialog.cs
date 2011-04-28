@@ -45,19 +45,18 @@ namespace Hyena.Widgets
                      string          msg)
             : base()
         {
-            HasSeparator = false;
             BorderWidth = 5;
             Resizable = false;
             Title = "";
             SkipTaskbarHint = true;
 
-            VBox.Spacing = 12;
+            ContentArea.Spacing = 12;
             ActionArea.Layout = Gtk.ButtonBoxStyle.End;
 
             Gtk.HBox hbox = new Gtk.HBox (false, 12);
             hbox.BorderWidth = 5;
             hbox.Show ();
-            VBox.PackStart (hbox, false, false, 0);
+            ContentArea.PackStart (hbox, false, false, 0);
 
             image = null;
 

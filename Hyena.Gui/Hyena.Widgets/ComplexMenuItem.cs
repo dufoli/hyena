@@ -61,11 +61,11 @@ namespace Hyena.Widgets
 
         protected void ConnectChildExpose(Widget widget)
         {
-            widget.ExposeEvent += OnChildExposeEvent;
+            widget.Drawn += OnDrawn;
         }
 
         [GLib.ConnectBefore]
-        private void OnChildExposeEvent(object o, ExposeEventArgs args)
+        private void OnDrawn(object o, DrawnArgs args)
         {
             // NOTE: This is a little insane, but it allows packing of EventBox based widgets
             // into a GtkMenuItem without breaking the theme (leaving an unstyled void in the item).
@@ -81,13 +81,23 @@ namespace Hyena.Widgets
                 width = Allocation.Width;
                 height = Allocation.Height;
 
-                ShadowType shadow_type = (ShadowType)StyleGetProperty("selected-shadow-type");
-                Gtk.Style.PaintBox(Style, widget.GdkWindow, StateType.Prelight, shadow_type,
-                    args.Event.Area, widget, "menuitem", x, y, width, height);
+                //ShadowType shadow_type = (ShadowType)StyleGetProperty("selected-shadow-type");
+                StyleContext.State = StateFlags.Prelight | StateFlags.Selected;
+                Gtk.Render.Frame (StyleContext, args.Cr, x, y, width, height);
+                Gtk.Render.Background (StyleContext, args.Cr, x, y, width, height);
+                //Gtk.Style.PaintBox(Style, args.Cr, StateType.Prelight, shadow_type,
+                //    widget, "menuitem", x, y, width, height);
             } else {
+
+                args.Cr.Save ();
+
+                var color = Parent.Style.Background (StateType.Normal);
                 // Fill only the visible area in solid color, to be most efficient
-                widget.GdkWindow.DrawRectangle(Parent.Style.BackgroundGC(StateType.Normal),
-                    true, 0, 0, widget.Allocation.Width, widget.Allocation.Height);
+                args.Cr.SetSourceRGB (color.Red, color.Green, color.Blue);
+                args.Cr.Rectangle (0, 0, widget.Allocation.Width, widget.Allocation.Height);
+                args.Cr.Fill ();
+
+                args.Cr.Restore ();
 
                 // FIXME: The above should not be necessary, but Clearlooks-based themes apparently
                 // don't provide any style for the menu background so we have to fill it first with
@@ -99,9 +109,11 @@ namespace Hyena.Widgets
                 y = Parent.Allocation.Y - widget.Allocation.Y;
                 width = Parent.Allocation.Width;
                 height = Parent.Allocation.Height;
-
-                Gtk.Style.PaintBox(Style, widget.GdkWindow, StateType.Normal, ShadowType.Out,
-                    args.Event.Area, widget, "menu", x, y, width, height);
+                StyleContext.State = StateFlags.Normal;
+                Gtk.Render.Frame (StyleContext, args.Cr, x, y, width, height);
+                Gtk.Render.Background (StyleContext, args.Cr, x, y, width, height);
+                //Gtk.Style.PaintBox(Style, args.Cr, StateType.Normal, ShadowType.Out,
+                //    widget, "menu", x, y, width, height);
             }
         }
 

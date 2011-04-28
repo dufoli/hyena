@@ -106,21 +106,25 @@ namespace Hyena.Widgets
 
         public SegmentedBar ()
         {
-            WidgetFlags |= WidgetFlags.NoWindow;
+            HasWindow = false;
         }
 
         protected override void OnRealized ()
         {
-            GdkWindow = Parent.GdkWindow;
+            Window = Parent.Window;
             base.OnRealized ();
         }
 
 #region Size Calculations
 
-        protected override void OnSizeRequested (ref Requisition requisition)
+        protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
         {
-            requisition.Width = 200;
-            requisition.Height = 0;
+            minimum_height = natural_height = 0;
+        }
+
+        protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+        {
+            minimum_width = natural_width = 200;
         }
 
         protected override void OnSizeAllocated (Gdk.Rectangle allocation)
@@ -312,13 +316,13 @@ namespace Hyena.Widgets
 
 #region Rendering
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
-            if (evnt.Window != GdkWindow) {
-                return base.OnExposeEvent (evnt);
+            if (!CairoHelper.ShouldDrawWindow (cr, Window)) {
+                return base.OnDrawn (cr);
             }
 
-            Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window);
+            CairoHelper.TransformToWindow (cr, this, Window);
 
             if (reflect) {
                 CairoExtensions.PushGroup (cr);
@@ -374,7 +378,6 @@ namespace Hyena.Widgets
             }
 
             bar.Destroy ();
-            CairoExtensions.DisposeContext (cr);
 
             return true;
         }
@@ -624,7 +627,8 @@ namespace Hyena.Widgets
             SetSizeRequest (350, -1);
 
             Gdk.Geometry limits = new Gdk.Geometry ();
-            limits.MinWidth = SizeRequest ().Width;
+            int nat_width;
+            GetPreferredWidth (out limits.MinWidth, out nat_width);
             limits.MaxWidth = Gdk.Screen.Default.Width;
             limits.MinHeight = -1;
             limits.MaxHeight = -1;

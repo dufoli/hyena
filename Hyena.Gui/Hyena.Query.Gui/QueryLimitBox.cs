@@ -42,8 +42,8 @@ namespace Hyena.Query.Gui
     {
         private CheckButton enabled_checkbox;
         private SpinButton count_spin;
-        private ComboBox limit_combo;
-        private ComboBox order_combo;
+        private ComboBoxText limit_combo;
+        private ComboBoxText order_combo;
 
         private QueryOrder [] orders;
         private QueryLimit [] limits;
@@ -64,12 +64,12 @@ namespace Hyena.Query.Gui
             count_spin.Value = 25;
             count_spin.SetSizeRequest (60, -1);
 
-            limit_combo = ComboBox.NewText ();
+            limit_combo = new ComboBoxText ();
             foreach (QueryLimit limit in limits) {
                 limit_combo.AppendText (limit.Label);
             }
 
-            order_combo = ComboBox.NewText ();
+            order_combo = new ComboBoxText ();
             order_combo.RowSeparatorFunc = IsRowSeparator;
             foreach (QueryOrder order in orders) {
                 if (order == null) {

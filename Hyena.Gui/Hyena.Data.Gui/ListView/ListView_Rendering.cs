@@ -49,8 +49,8 @@ namespace Hyena.Data.Gui
 
         public override Pango.Layout PangoLayout {
             get {
-                if (pango_layout == null && GdkWindow != null && IsRealized) {
-                    using (var cr = Gdk.CairoHelper.Create (GdkWindow)) {
+                if (pango_layout == null && Window != null && IsRealized) {
+                    using (var cr = Gdk.CairoHelper.Create (Window)) {
                         pango_layout = CairoExtensions.CreateLayout (this, cr);
                         cell_context.FontDescription = pango_layout.FontDescription;
                         cell_context.Layout = pango_layout;
@@ -100,7 +100,7 @@ namespace Hyena.Data.Gui
             theme = Hyena.Gui.Theming.ThemeEngine.CreateTheme (this);
 
             // Save the drawable so we can reuse it
-            Gdk.Drawable drawable = cell_context != null ? cell_context.Drawable : null;
+            var drawable = cell_context != null ? cell_context.Drawable : null;
 
             if (pango_layout != null) {
                 cell_context.FontDescription.Dispose ();
@@ -129,18 +129,21 @@ namespace Hyena.Data.Gui
             }
         }
 
-        protected override bool OnExposeEvent (EventExpose evnt)
+        protected override bool OnDamageEvent (Gdk.EventExpose evnt)
         {
             if (DoNotRenderNullModel && Model == null) {
                 return true;
             }
 
             var damage = new Rectangle ();
-            foreach (Rectangle rect in evnt.Region.GetRectangles ()) {
+            for (int i = 0; i < evnt.Region.NumRectangles; i++) {
+                var rect_int = evnt.Region.GetRectangle (i);
+                var rect = 
+                    new Rectangle (rect_int.X, rect_int.Y, rect_int.Width, rect_int.Height);
                 damage = damage.Union (rect);
             }
 
-            cairo_context = CairoHelper.Create (evnt.Window);
+            cairo_context = Gdk.CairoHelper.Create (evnt.Window);
 
             cell_context.Layout = PangoLayout;
             cell_context.Context = cairo_context;

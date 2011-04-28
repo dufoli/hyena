@@ -124,15 +124,8 @@ namespace Hyena.Data.Gui.Accessibility
             return new Atk.NoOpObject (list_view);
         }
 
-// Ensure https://bugzilla.novell.com/show_bug.cgi?id=512477 is fixed
-        private static readonly int [] empty_int_array = new int[0];
-        public int [] SelectedColumns {
-            get { return empty_int_array; }
-        }
-
-        public int [] SelectedRows {
-            get { return list_view.Selection.ToArray (); }
-        }
+        public int GetSelectedRows (out int row) { row = 0; return 0; }
+        public int GetSelectedColumns (out int cols) { cols = 0; return 0; }
 
         public bool IsColumnSelected (int column)
         {

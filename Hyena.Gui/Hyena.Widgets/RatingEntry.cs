@@ -54,7 +54,7 @@ namespace Hyena.Widgets
 
         public RatingEntry () : this (0)
         {
-            WidgetFlags |= Gtk.WidgetFlags.NoWindow;
+            HasWindow = false;
         }
 
         public RatingEntry (int rating) : this (rating, new RatingRenderer ())
@@ -149,8 +149,9 @@ namespace Hyena.Widgets
 
         protected override void OnRealized ()
         {
-            WidgetFlags |= WidgetFlags.Realized | WidgetFlags.NoWindow;
-            GdkWindow = Parent.GdkWindow;
+            IsRealized = true;
+            HasWindow = false;
+            Window = Parent.Window;
 
             Gdk.WindowAttr attributes = new Gdk.WindowAttr ();
             attributes.WindowType = Gdk.WindowType.Child;
@@ -158,7 +159,7 @@ namespace Hyena.Widgets
             attributes.Y = Allocation.Y;
             attributes.Width = Allocation.Width;
             attributes.Height = Allocation.Height;
-            attributes.Wclass = Gdk.WindowClass.InputOnly;
+            attributes.Wclass = Gdk.WindowWindowClass.Only;
             attributes.EventMask = (int)(
                 Gdk.EventMask.PointerMotionMask |
                 Gdk.EventMask.EnterNotifyMask |
@@ -174,7 +175,7 @@ namespace Hyena.Widgets
                 Gdk.WindowAttributesType.Y |
                 Gdk.WindowAttributesType.Wmclass;
 
-            event_window = new Gdk.Window (GdkWindow, attributes, attributes_mask);
+            event_window = new Gdk.Window (Window, attributes, attributes_mask);
             event_window.UserData = Handle;
 
             Style = Gtk.Rc.GetStyleByPaths (Settings, "*.GtkEntry", "*.GtkEntry", GType);
@@ -184,7 +185,7 @@ namespace Hyena.Widgets
 
         protected override void OnUnrealized ()
         {
-            WidgetFlags &= ~WidgetFlags.Realized;
+            IsRealized = false;
 
             event_window.UserData = IntPtr.Zero;
             Hyena.Gui.GtkWorkarounds.WindowDestroy (event_window);
@@ -195,13 +196,13 @@ namespace Hyena.Widgets
 
         protected override void OnMapped ()
         {
-            WidgetFlags |= WidgetFlags.Mapped;
+            IsMapped = true;
             event_window.Show ();
         }
 
         protected override void OnUnmapped ()
         {
-            WidgetFlags &= ~WidgetFlags.Mapped;
+            IsMapped = false;
             event_window.Hide ();
         }
 
@@ -229,8 +230,21 @@ namespace Hyena.Widgets
             }
         }
 
-        protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+        protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
         {
+            var requisition = SizeRequested ();
+            minimum_height = natural_height = requisition.Height;
+        }
+
+        protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+        {
+            var requisition = SizeRequested ();
+            minimum_width = natural_width = requisition.Width;
+        }
+
+        protected Requisition SizeRequested ()
+        {
+            var requisition = new Requisition ();
             EnsureStyle ();
 
             Pango.FontMetrics metrics = PangoContext.GetMetrics (Style.FontDescription, PangoContext.Language);
@@ -247,30 +261,35 @@ namespace Hyena.Widgets
 
             requisition.Width = renderer.Width;
             requisition.Height = renderer.Height;
+            return requisition;
         }
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
-            if (evnt.Window != GdkWindow) {
+            if (!CairoHelper.ShouldDrawWindow(cr, Window)) {
                 return true;
             }
 
             if (HasFrame) {
                 int y_mid = (int)Math.Round ((Allocation.Height - renderer.Height) / 2.0);
-                Gtk.Style.PaintFlatBox (Style, GdkWindow, State, ShadowType.None, evnt.Area, this, "entry",
-                    Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
-                Gtk.Style.PaintShadow (Style, GdkWindow, State, ShadowType.In,
-                    evnt.Area, this, "entry", Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                this.StyleContext.State = StateFlags.Normal;
+                Gtk.Render.Frame (StyleContext, cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                Gtk.Render.Background (StyleContext, cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                //Gtk.Style.PaintFlatBox (Style, cr, State, ShadowType.None, this, "entry",
+                //    Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                this.StyleContext.State = StateFlags.Active;
+                Gtk.Render.Frame (StyleContext, cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                //Gtk.Style.PaintShadow (Style, cr, State, ShadowType.In,
+                //    this, "entry", Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
             }
 
-            Cairo.Context cr = Gdk.CairoHelper.Create (GdkWindow);
+            CairoHelper.TransformToWindow (cr, this, Window);
             renderer.Render (cr, Allocation,
                 CairoExtensions.GdkColorToCairoColor (HasFrame ? Parent.Style.Text (State) : Parent.Style.Foreground (State)),
                 AlwaysShowEmptyStars, PreviewOnHover && hover_value >= renderer.MinRating, hover_value,
                 State == StateType.Insensitive ? 1 : 0.90,
                 State == StateType.Insensitive ? 1 : 0.55,
                 State == StateType.Insensitive ? 1 : 0.45);
-            CairoExtensions.DisposeContext (cr);
 
             return true;
         }
@@ -444,16 +463,13 @@ namespace Hyena.Widgets
         {
             new RatingAccessibleFactory ();
             Atk.Global.DefaultRegistry.SetFactoryType ((GLib.GType)typeof (RatingEntry), (GLib.GType)typeof (RatingAccessibleFactory));
-        }
+            CreateAccessibleHandler = (obj) => {
+                return new RatingAccessible (obj);
+            };
+            GetAccessibleTypeHandler = () => {
+                return RatingAccessible.GType;
+            };
 
-        protected override Atk.Object OnCreateAccessible (GLib.Object obj)
-        {
-            return new RatingAccessible (obj);
-        }
-
-        protected override GLib.GType OnGetAccessibleType ()
-        {
-            return RatingAccessible.GType;
         }
     }
 

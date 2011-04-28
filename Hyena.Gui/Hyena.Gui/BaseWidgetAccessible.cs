@@ -214,7 +214,7 @@ namespace Hyena.Gui
 
         private bool SetSizeAndPosition (int x, int y, int w, int h, Atk.CoordType coordType, bool setSize)
         {
-            if (!widget.IsTopLevel) {
+            if (!widget.IsToplevel) {
                 return false;
             }
 
@@ -230,7 +230,8 @@ namespace Hyena.Gui
             }
 
             #pragma warning disable 0612
-            widget.SetUposition (x, y);
+            //widget.SetUposition (x, y);
+            widget.SetAllocation (new Gdk.Rectangle (x, y, w, h));
             #pragma warning restore 0612
 
             if (setSize) {
@@ -242,7 +243,7 @@ namespace Hyena.Gui
 
         public bool SetSize (int w, int h)
         {
-            if (widget.IsTopLevel) {
+            if (widget.IsToplevel) {
                 widget.SetSizeRequest (w, h);
                 return true;
             } else {

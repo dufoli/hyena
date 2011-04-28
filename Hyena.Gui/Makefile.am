@@ -1,7 +1,8 @@
 ASSEMBLY = Hyena.Gui
 ASSEMBLY_BUILD_FLAGS = -unsafe
 TARGET = library
-LINK = -r:ICSharpCode.SharpZipLib -r:Mono.Posix -r:System -r:System.Core -r:Mono.Cairo \
+#FIXME: not hardcode path to cairo-sharp
+LINK = -r:ICSharpCode.SharpZipLib -r:Mono.Posix -r:System -r:System.Core -r:/usr/lib/mono/gtk-sharp-3.0/cairo-sharp.dll \
 	   $(GTKSHARP_LIBS) $(GLIBSHARP_LIBS) \
 	   -r:$(DIR_BIN)/Hyena.dll
 SOURCES =  \

@@ -40,7 +40,7 @@ namespace Hyena.Widgets
 
         public WrapLabel ()
         {
-            WidgetFlags |= WidgetFlags.NoWindow;
+            HasWindow = false;
         }
 
         private void CreateLayout ()
@@ -83,7 +83,7 @@ namespace Hyena.Widgets
 
         protected override void OnRealized ()
         {
-            GdkWindow = Parent.GdkWindow;
+            Window = Parent.Window;
             base.OnRealized ();
         }
 
@@ -100,16 +100,42 @@ namespace Hyena.Widgets
             base.OnSizeAllocated (allocation);
         }
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDrawn (Cairo.Context cr)
         {
-            if (evnt.Window == GdkWindow) {
+            if (CairoHelper.ShouldDrawWindow (cr, Window)) {
                 // Center the text vertically
                 int lw, lh;
                 layout.GetPixelSize (out lw, out lh);
                 int y = Allocation.Y + (Allocation.Height - lh) / 2;
+                
+                //TODO include in a utils class or find one in gtk
+                switch (State) {
+                    case StateType.Active:
+                        StyleContext.State = StateFlags.Active;
+                    break;
+                    case StateType.Focused:
+                        StyleContext.State = StateFlags.Selected;
+                    break;
+                    case StateType.Inconsistent:
+                        StyleContext.State = StateFlags.Inconsistent;
+                    break;
+                    case StateType.Insensitive:
+                        StyleContext.State = StateFlags.Insensitive;
+                    break;
+                    case StateType.Normal:
+                        StyleContext.State = StateFlags.Normal;
+                    break;
+                    case StateType.Prelight:
+                        StyleContext.State = StateFlags.Prelight;
+                    break;
+                    case StateType.Selected:
+                        StyleContext.State = StateFlags.Selected;
+                    break;
+                }
 
-                Gtk.Style.PaintLayout (Style, GdkWindow, State, false,
-                    evnt.Area, this, null, Allocation.X, y, layout);
+                Gtk.Render.Layout (StyleContext, cr, Allocation.X, y, layout);
+                //Gtk.Style.PaintLayout (Style, cr, State, false,
+                //    this, null, Allocation.X, y, layout);
             }
 
             return true;

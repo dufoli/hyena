@@ -44,7 +44,7 @@ namespace Hyena.Gui.Canvas
 
         public CanvasHost ()
         {
-            WidgetFlags |= WidgetFlags.NoWindow;
+            HasWindow = false;
             manager = new CanvasManager (this);
         }
 
@@ -62,7 +62,7 @@ namespace Hyena.Gui.Canvas
             attributes.Y = Allocation.Y;
             attributes.Width = Allocation.Width;
             attributes.Height = Allocation.Height;
-            attributes.Wclass = WindowClass.InputOnly;
+            attributes.Wclass = WindowWindowClass.Only;
             attributes.EventMask = (int)(
                 EventMask.PointerMotionMask |
                 EventMask.ButtonPressMask |
@@ -74,7 +74,7 @@ namespace Hyena.Gui.Canvas
             WindowAttributesType attributes_mask =
                 WindowAttributesType.X | WindowAttributesType.Y | WindowAttributesType.Wmclass;
 
-            event_window = new Gdk.Window (GdkWindow, attributes, attributes_mask);
+            event_window = new Gdk.Window (Window, attributes, attributes_mask);
             event_window.UserData = Handle;
 
             AllocateChild ();
@@ -83,7 +83,7 @@ namespace Hyena.Gui.Canvas
 
         protected override void OnUnrealized ()
         {
-            WidgetFlags ^= WidgetFlags.Realized;
+            IsRealized = false;
 
             event_window.UserData = IntPtr.Zero;
             Hyena.Gui.GtkWorkarounds.WindowDestroy (event_window);
@@ -114,8 +114,21 @@ namespace Hyena.Gui.Canvas
             }
         }
 
-        protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+        protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)
         {
+            var requisition = SizeRequested ();
+            minimum_height = natural_height = requisition.Height;
+        }
+
+        protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
+        {
+            var requisition = SizeRequested ();
+            minimum_width = natural_width = requisition.Width;
+        }
+
+        protected Requisition SizeRequested ()
+        {
+            var requisition = new Requisition ();
             if (canvas_child != null) {
                 Size size = canvas_child.Measure (Size.Empty);
 
@@ -127,11 +140,12 @@ namespace Hyena.Gui.Canvas
                     requisition.Height = (int)Math.Ceiling (size.Height);
                 }
             }
+            return requisition;
         }
 
         private Random rand;
 
-        protected override bool OnExposeEvent (Gdk.EventExpose evnt)
+        protected override bool OnDamageEvent (Gdk.EventExpose evnt)
         {
             if (canvas_child == null || !canvas_child.Visible || !Visible || !IsMapped) {
                 return true;
@@ -140,7 +154,8 @@ namespace Hyena.Gui.Canvas
             Cairo.Context cr = Gdk.CairoHelper.Create (evnt.Window);
             context.Context = cr;
 
-            foreach (Gdk.Rectangle damage in evnt.Region.GetRectangles ()) {
+            for (int i = 0; i < evnt.Region.NumRectangles; i++) {
+                var damage = evnt.Region.GetRectangle (i);
                 cr.Rectangle (damage.X, damage.Y, damage.Width, damage.Height);
                 cr.Clip ();
 
@@ -309,11 +324,11 @@ namespace Hyena.Gui.Canvas
         public Pango.Layout PangoLayout {
             get {
                 if (layout == null) {
-                    if (GdkWindow == null || !IsRealized) {
+                    if (Window == null || !IsRealized) {
                         return null;
                     }
 
-                    using (var cr = Gdk.CairoHelper.Create (GdkWindow)) {
+                    using (var cr = Gdk.CairoHelper.Create (Window)) {
                         layout = CairoExtensions.CreateLayout (this, cr);
                         FontDescription = layout.FontDescription;
                     }
