@@ -178,7 +178,8 @@ namespace Hyena.Widgets
             event_window = new Gdk.Window (Window, attributes, attributes_mask);
             event_window.UserData = Handle;
 
-            Style = Gtk.Rc.GetStyleByPaths (Settings, "*.GtkEntry", "*.GtkEntry", GType);
+            //TODO stylecontext is set from path and path come from name so must inherit but need to be checked!
+            //Style = Gtk.Rc.GetStyleByPaths (Settings, "*.GtkEntry", "*.GtkEntry", GType);
 
             base.OnRealized ();
         }
@@ -207,13 +208,13 @@ namespace Hyena.Widgets
         }
 
         private bool changing_style;
-        protected override void OnStyleSet (Style previous_style)
+        protected override void OnStyleUpdated ()
         {
             if (changing_style) {
                 return;
             }
 
-            base.OnStyleSet (previous_style);
+            base.OnStyleUpdated ();
 
             changing_style = true;
             focus_width = (int)StyleGetProperty ("focus-line-width");
@@ -245,15 +246,17 @@ namespace Hyena.Widgets
         protected Requisition SizeRequested ()
         {
             var requisition = new Requisition ();
-            EnsureStyle ();
+            //TODO check if exist equivalent in stylecontext that I do not found...
+            //EnsureStyle ();
 
-            Pango.FontMetrics metrics = PangoContext.GetMetrics (Style.FontDescription, PangoContext.Language);
+            Pango.FontMetrics metrics = PangoContext.GetMetrics (StyleContext.GetFont (StateFlags), PangoContext.Language);
             renderer.Size = ((int)(metrics.Ascent + metrics.Descent) + 512) >> 10; // PANGO_PIXELS(d)
             metrics.Dispose ();
 
             if (HasFrame) {
-                renderer.Xpad = Style.Xthickness + (interior_focus ? focus_width : 0) + 2;
-                renderer.Ypad = Style.Ythickness + (interior_focus ? focus_width : 0) + 2;
+                int borderWidth = (int)StyleGetProperty ("border-width");
+                renderer.Xpad = borderWidth + (interior_focus ? focus_width : 0) + 2;
+                renderer.Ypad = borderWidth + (interior_focus ? focus_width : 0) + 2;
             } else {
                 renderer.Xpad = 0;
                 renderer.Ypad = 0;
@@ -283,9 +286,12 @@ namespace Hyena.Widgets
                 //    this, "entry", Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
             }
 
+            Gdk.RGBA rgba;
+            Parent.StyleContext.GetColor (StateFlags, rgba);
+
             CairoHelper.TransformToWindow (cr, this, Window);
             renderer.Render (cr, Allocation,
-                CairoExtensions.GdkColorToCairoColor (HasFrame ? Parent.Style.Text (State) : Parent.Style.Foreground (State)),
+                new Cairo.Color (rgba.Red, rgba.Green, rgba.Blue, rgba.Alpha),
                 AlwaysShowEmptyStars, PreviewOnHover && hover_value >= renderer.MinRating, hover_value,
                 State == StateType.Insensitive ? 1 : 0.90,
                 State == StateType.Insensitive ? 1 : 0.55,
@@ -509,7 +515,7 @@ namespace Hyena.Widgets
             RatingEntry entry3 = new RatingEntry ();
             Pango.FontDescription fd = entry3.PangoContext.FontDescription.Copy ();
             fd.Size = (int)(fd.Size * Pango.Scale.XXLarge);
-            entry3.ModifyFont (fd);
+            entry3.OverrideFont (fd);
             fd.Dispose ();
             box.PackStart (entry3, true, true, 0);
 
