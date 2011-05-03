@@ -132,7 +132,7 @@ namespace Hyena.Widgets
             cr.Restore ();
             return base.OnDrawn (cr);
         }
-		
+
         public void RemoveButton (Button button)
         {
             button_box.Remove (button);
