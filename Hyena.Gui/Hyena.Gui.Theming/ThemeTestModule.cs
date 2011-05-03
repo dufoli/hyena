@@ -73,9 +73,9 @@ namespace Hyena.Gui.Theming
         {
             private Theme theme;
 
-            protected override void OnStyleSet (Style previous_style)
+            protected override void OnStyleUpdated ()
             {
-                base.OnStyleSet (previous_style);
+                base.OnStyleUpdated ();
                 theme = ThemeEngine.CreateTheme (this);
                 theme.Context.Radius = 10;
             }

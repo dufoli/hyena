@@ -34,15 +34,15 @@ namespace Hyena.Gui.Theming
 {
     public enum GtkColorClass
     {
-        Light,
-        Mid,
-        Dark,
         Base,
+        Light,
+        Dark,
         Text,
+        Border,
         Background,
         Foreground
     }
-
+// TODO remove base text light datk when all migration done on widgets
     public class GtkColors
     {
         private Cairo.Color [] gtk_colors;
@@ -58,7 +58,7 @@ namespace Hyena.Gui.Theming
                     return;
                 } else if (widget != null) {
                     widget.Realized -= OnWidgetRealized;
-                    widget.StyleSet -= OnWidgetStyleSet;
+                    widget.StyleUpdated -= OnWidgetStyleUpdated;
                 }
 
                 widget = value;
@@ -68,7 +68,7 @@ namespace Hyena.Gui.Theming
                 }
 
                 widget.Realized += OnWidgetRealized;
-                widget.StyleSet += OnWidgetStyleSet;
+                widget.StyleUpdated += OnWidgetStyleUpdated;
             }
         }
 
@@ -81,7 +81,7 @@ namespace Hyena.Gui.Theming
             RefreshColors ();
         }
 
-        private void OnWidgetStyleSet (object o, StyleSetArgs args)
+        private void OnWidgetStyleUpdated (object o, EventArgs args)
         {
             RefreshColors ();
         }
@@ -103,16 +103,18 @@ namespace Hyena.Gui.Theming
 
             refreshing = true;
 
-            int sn = (int)StateType.Insensitive + 1;
+            int sn = (int)StateType.Insensitive + 1;//5
             int cn = (int)GtkColorClass.Foreground + 1;
 
             if (gtk_colors == null) {
                 gtk_colors = new Cairo.Color[sn * cn];
             }
 
+            StateFlags[] states = new StateFlags[] {StateFlags.Normal, StateFlags.Active, StateFlags.Prelight, StateFlags.Selected, StateFlags.Insensitive, StateFlags.Inconsistent, StateFlags.Focused};
+
             for (int c = 0, i = 0; c < cn; c++) {
                 for (int s = 0; s < sn; s++, i++) {
-                    Gdk.Color color = Gdk.Color.Zero;
+                    Gdk.RGBA color = Gdk.RGBA.Zero;
 
                     if (widget != null && widget.IsRealized) {
                         switch ((GtkColorClass)c) {
@@ -121,14 +123,13 @@ namespace Hyena.Gui.Theming
                             case GtkColorClass.Dark:       color = widget.Style.DarkColors[s];  break;
                             case GtkColorClass.Base:       color = widget.Style.BaseColors[s];  break;
                             case GtkColorClass.Text:       color = widget.Style.TextColors[s];  break;
-                            case GtkColorClass.Background: color = widget.Style.Backgrounds[s]; break;
-                            case GtkColorClass.Foreground: color = widget.Style.Foregrounds[s]; break;
+                            case GtkColorClass.Border:     widget.StyleContext.GetBorderColor (states[s], color); break;
+                            case GtkColorClass.Background: color = widget.StyleContext.GetBackgroundColor (states[s]); break;
+                            case GtkColorClass.Foreground: widget.StyleContext.GetColor (states[s], color); break;
                         }
-                    } else {
-                        color = new Gdk.Color (0, 0, 0);
                     }
 
-                    gtk_colors[c * sn + s] = CairoExtensions.GdkColorToCairoColor (color);
+                    gtk_colors[c * sn + s] = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
                 }
             }
 

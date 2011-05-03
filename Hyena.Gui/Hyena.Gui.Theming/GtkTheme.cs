@@ -43,8 +43,11 @@ namespace Hyena.Gui.Theming
 
         public static Cairo.Color GetCairoTextMidColor (Widget widget)
         {
-            Cairo.Color text_color = CairoExtensions.GdkColorToCairoColor (widget.Style.Foreground (StateType.Normal));
-            Cairo.Color background_color = CairoExtensions.GdkColorToCairoColor (widget.Style.Background (StateType.Normal));
+			Gdk.RGBA color;
+			widget.StyleContext.GetColor (StateFlags.Normal, color);
+            Cairo.Color text_color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
+			color = widget.StyleContext.GetBackgroundColor (StateFlags.Normal);
+            Cairo.Color background_color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
             return CairoExtensions.AlphaBlend (text_color, background_color, 0.5);
         }
 
@@ -55,7 +58,7 @@ namespace Hyena.Gui.Theming
             rule_color = CairoExtensions.ColorShade (ViewFill, 0.95);
 
             // On Windows we use Normal b/c Active incorrectly returns black (at least on XP)
-            border_color = Colors.GetWidgetColor (GtkColorClass.Dark,
+            border_color = Colors.GetWidgetColor (GtkColorClass.Border,
               Hyena.PlatformDetection.IsWindows ? StateType.Normal : StateType.Active
             );
         }
