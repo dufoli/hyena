@@ -484,7 +484,9 @@ namespace Hyena.Widgets
             }
 
             Pango.Layout layout = null;
-            Color text_color = CairoExtensions.GdkColorToCairoColor (Style.Foreground (State));
+			Gdk.RGBA rgba;
+			StyleContext.GetColor (StateFlags, rgba);
+            Color text_color = new Cairo.Color (rgba.Red, rgba.Green, rgba.Blue, rgba.Alpha);
             Color box_stroke_color = new Color (0, 0, 0, 0.6);
 
             int x = 0;

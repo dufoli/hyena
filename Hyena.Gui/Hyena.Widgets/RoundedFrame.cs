@@ -88,9 +88,9 @@ namespace Hyena.Widgets
 
 #region Gtk.Widget Overrides
 
-        protected override void OnStyleSet (Style previous_style)
+        protected override void OnStyleUpdated ()
         {
-            base.OnStyleSet (previous_style);
+            base.OnStyleUpdated ();
             theme = Hyena.Gui.Theming.ThemeEngine.CreateTheme (this);
             frame_width = (int)theme.Context.Radius + 1;
         }

@@ -246,8 +246,6 @@ namespace Hyena.Widgets
         protected Requisition SizeRequested ()
         {
             var requisition = new Requisition ();
-            //TODO check if exist equivalent in stylecontext that I do not found...
-            //EnsureStyle ();
 
             Pango.FontMetrics metrics = PangoContext.GetMetrics (StyleContext.GetFont (StateFlags), PangoContext.Language);
             renderer.Size = ((int)(metrics.Ascent + metrics.Descent) + 512) >> 10; // PANGO_PIXELS(d)

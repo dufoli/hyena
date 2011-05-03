@@ -126,8 +126,7 @@ namespace Hyena.Widgets
 
             Window = new Gdk.Window (Parent.Window, attributes, 0);
             Window.UserData = Handle;
-            Window.Background = Style.Background (State);
-            Style.Attach (Window);
+            Window.BackgroundRgba = StyleContext.GetBackgroundColor (StateFlags);
         }
 
         protected override void OnGetPreferredHeight (out int minimum_height, out int natural_height)

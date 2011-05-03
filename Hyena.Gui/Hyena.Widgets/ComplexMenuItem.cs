@@ -91,7 +91,7 @@ namespace Hyena.Widgets
 
                 args.Cr.Save ();
 
-                var color = Parent.Style.Background (StateType.Normal);
+                var color = Parent.StyleContext.GetBackgroundColor (StateFlags.Normal);
                 // Fill only the visible area in solid color, to be most efficient
                 args.Cr.SetSourceRGB (color.Red, color.Green, color.Blue);
                 args.Cr.Rectangle (0, 0, widget.Allocation.Width, widget.Allocation.Height);

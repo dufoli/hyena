@@ -74,11 +74,11 @@ namespace Hyena.Widgets
             QueueResize ();
         }
 
-        protected override void OnStyleSet (Style previous_style)
+        protected override void OnStyleUpdated ()
         {
             CreateLayout ();
             UpdateLayout ();
-            base.OnStyleSet (previous_style);
+            base.OnStyleUpdated ();
         }
 
         protected override void OnRealized ()

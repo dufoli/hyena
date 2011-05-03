@@ -55,10 +55,6 @@ namespace Hyena.Widgets
         {
             win = new Window (WindowType.Popup);
             win.Name = "gtk-tooltips";
-            win.EnsureStyle ();
-            win.StyleSet += delegate {
-                Style = win.Style;
-            };
 
             HBox shell_box = new HBox ();
             shell_box.Spacing = 10;
@@ -99,8 +95,6 @@ namespace Hyena.Widgets
 
             Add (shell_box);
 
-            EnsureStyle ();
-
             BorderWidth = 3;
         }
 
@@ -133,25 +127,12 @@ namespace Hyena.Widgets
             cr.Save ();
             CairoHelper.TransformToWindow (cr, this, Window);
 
-            Gdk.Color color = Style.Background (StateType.Normal);
-            theme.DrawFrame (cr, Allocation, CairoExtensions.GdkColorToCairoColor (color));
+            Gdk.RGBA color = StyleContext.GetBackgroundColor (StateFlags.Normal);
+            theme.DrawFrame (cr, Allocation, new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha));
             cr.Restore ();
             return base.OnDrawn (cr);
         }
-
-        private bool changing_style = false;
-        protected override void OnStyleSet (Gtk.Style previousStyle)
-        {
-            if (changing_style) {
-                return;
-            }
-
-            changing_style = true;
-            Style = win.Style;
-            label.Style = Style;
-            changing_style = false;
-        }
-
+		
         public void RemoveButton (Button button)
         {
             button_box.Remove (button);
