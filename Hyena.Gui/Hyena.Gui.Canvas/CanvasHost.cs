@@ -224,7 +224,7 @@ namespace Hyena.Gui.Canvas
 
         private bool changing_style = false;
 
-        protected override void OnStyleSet (Style old_style)
+        protected override void OnStyleUpdated ()
         {
             if (changing_style) {
                 return;
@@ -240,7 +240,7 @@ namespace Hyena.Gui.Canvas
 
             changing_style = false;
 
-            base.OnStyleSet (old_style);
+            base.OnStyleUpdated ();
         }
 
         protected override bool OnButtonPressEvent (Gdk.EventButton press)
