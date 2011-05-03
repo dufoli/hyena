@@ -80,7 +80,7 @@ namespace Hyena.Data.Gui
 
         private bool changing_style = false;
 
-        protected override void OnStyleSet (Style old_style)
+        protected override void OnStyleUpdated ()
         {
             if (changing_style) {
                 return;
@@ -90,7 +90,7 @@ namespace Hyena.Data.Gui
             GtkUtilities.AdaptGtkRcStyle (this, typeof (TreeView));
             changing_style = false;
 
-            base.OnStyleSet (old_style);
+            base.OnStyleUpdated ();
 
             // FIXME: legacy list foo
             if (ViewLayout == null) {

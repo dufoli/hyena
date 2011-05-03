@@ -579,10 +579,12 @@ namespace Hyena.Data.Gui
                 Add (label);
             }
 
-            protected override void OnStyleSet (Style previousStyle)
+            protected override void OnStyleUpdated ()
             {
-                base.OnStyleSet (previousStyle);
-                label.ModifyFg (StateType.Prelight, Style.Foreground (StateType.Selected));
+                base.OnStyleUpdated ();
+				Gdk.RGBA rgba;
+				StyleContext.GetColor (StateFlags.Selected, rgba);
+                label.OverrideColor (StateFlags.Prelight, rgba);
             }
 
             protected override void OnActivated ()
@@ -616,10 +618,12 @@ namespace Hyena.Data.Gui
                 Add (label);
             }
 
-            protected override void OnStyleSet (Style previousStyle)
+            protected override void OnStyleUpdated ()
             {
-                base.OnStyleSet (previousStyle);
-                label.ModifyFg (StateType.Prelight, Style.Foreground (StateType.Selected));
+                base.OnStyleUpdated ();
+				Gdk.RGBA rgba;
+				StyleContext.GetColor (StateFlags.Selected, rgba);
+                label.OverrideColor (StateFlags.Prelight, rgba);
             }
 
             protected override void OnActivated ()
