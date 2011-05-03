@@ -38,6 +38,7 @@ namespace Hyena.Gui.Theming
         Light,
         Dark,
         Text,
+        Mid,
         Border,
         Background,
         Foreground
@@ -114,7 +115,8 @@ namespace Hyena.Gui.Theming
 
             for (int c = 0, i = 0; c < cn; c++) {
                 for (int s = 0; s < sn; s++, i++) {
-                    Gdk.RGBA color = Gdk.RGBA.Zero;
+                    //Gdk.RGBA color = Gdk.RGBA.Zero;
+                    Gdk.Color color = Gdk.Color.Zero;
 
                     if (widget != null && widget.IsRealized) {
                         switch ((GtkColorClass)c) {
@@ -123,13 +125,18 @@ namespace Hyena.Gui.Theming
                             case GtkColorClass.Dark:       color = widget.Style.DarkColors[s];  break;
                             case GtkColorClass.Base:       color = widget.Style.BaseColors[s];  break;
                             case GtkColorClass.Text:       color = widget.Style.TextColors[s];  break;
-                            case GtkColorClass.Border:     widget.StyleContext.GetBorderColor (states[s], color); break;
-                            case GtkColorClass.Background: color = widget.StyleContext.GetBackgroundColor (states[s]); break;
-                            case GtkColorClass.Foreground: widget.StyleContext.GetColor (states[s], color); break;
+                            case GtkColorClass.Background:       color = widget.Style.Backgrounds[s];  break;
+                            case GtkColorClass.Foreground:       color = widget.Style.Foregrounds[s];  break;
+                            //case GtkColorClass.Border:     widget.StyleContext.GetBorderColor (states[s], color); break;
+                            //case GtkColorClass.Background: color = widget.StyleContext.GetBackgroundColor (states[s]); break;
+                            //case GtkColorClass.Foreground: widget.StyleContext.GetColor (states[s], color); break;
                         }
+                    } else {
+                        color = new Gdk.Color (0, 0, 0);
                     }
 
-                    gtk_colors[c * sn + s] = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
+                    gtk_colors[c * sn + s] = CairoExtensions.GdkColorToCairoColor (color);
+                    //gtk_colors[c * sn + s] = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
                 }
             }
 
