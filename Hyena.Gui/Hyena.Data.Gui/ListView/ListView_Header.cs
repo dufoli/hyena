@@ -582,8 +582,7 @@ namespace Hyena.Data.Gui
             protected override void OnStyleUpdated ()
             {
                 base.OnStyleUpdated ();
-                Gdk.RGBA rgba;
-                StyleContext.GetColor (StateFlags.Selected, rgba);
+                Gdk.RGBA rgba = StyleContext.GetColor (StateFlags.Selected);
                 label.OverrideColor (StateFlags.Prelight, rgba);
             }
 
@@ -621,8 +620,7 @@ namespace Hyena.Data.Gui
             protected override void OnStyleUpdated ()
             {
                 base.OnStyleUpdated ();
-                Gdk.RGBA rgba;
-                StyleContext.GetColor (StateFlags.Selected, rgba);
+                Gdk.RGBA rgba = StyleContext.GetColor (StateFlags.Selected);
                 label.OverrideColor (StateFlags.Prelight, rgba);
             }
 

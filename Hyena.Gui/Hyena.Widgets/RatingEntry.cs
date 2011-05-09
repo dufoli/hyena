@@ -284,8 +284,7 @@ namespace Hyena.Widgets
                 //    this, "entry", Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
             }
 
-            Gdk.RGBA rgba;
-            Parent.StyleContext.GetColor (StateFlags, rgba);
+            Gdk.RGBA rgba = Parent.StyleContext.GetColor (StateFlags);
 
             CairoHelper.TransformToWindow (cr, this, Window);
             renderer.Render (cr, Allocation,
