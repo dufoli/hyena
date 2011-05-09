@@ -27,6 +27,14 @@ test:
 	echo "Tests not enabled.  Pass --enable-tests to configure or ./autogen.sh"
 endif
 
+hg:
+	pushd bin; \
+	echo "class Entry { static void Main () { Hyena.Gui.TestModuleRunner.Run (); } }" > tester.cs; \
+	$(MCS) -r:Hyena.Gui.dll tester.cs; \
+	mono --debug tester.exe; \
+	rm tester.*; \
+	popd;
+
 MAINTAINERCLEANFILES = \
 	compile \
 	INSTALL \
