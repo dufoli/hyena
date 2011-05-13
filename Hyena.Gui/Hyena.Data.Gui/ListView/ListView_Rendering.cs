@@ -61,7 +61,7 @@ namespace Hyena.Data.Gui
         }
 
         public override Pango.FontDescription FontDescription {
-            get { return cell_context.FontDescription; }
+            get { return cell_context  != null ? cell_context.FontDescription : null; }
         }
 
         private List<int> selected_rows = new List<int> ();
