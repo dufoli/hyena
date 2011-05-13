@@ -133,7 +133,7 @@ namespace Hyena.Widgets
                     break;
                 }
 
-                Gtk.Render.Layout (StyleContext, cr, Allocation.X, y, layout);
+                StyleContext.RenderLayout (cr, Allocation.X, y, layout);
                 //Gtk.Style.PaintLayout (Style, cr, State, false,
                 //    this, null, Allocation.X, y, layout);
             }

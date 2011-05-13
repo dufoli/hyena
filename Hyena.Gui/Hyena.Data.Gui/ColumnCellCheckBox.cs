@@ -60,7 +60,7 @@ namespace Hyena.Data.Gui
             }
             context.Widget.StyleContext.State = (Value ? StateFlags.Active : StateFlags.Normal);
             //"cellcheck"
-            Gtk.Render.Check (context.Widget.StyleContext, context.Context, x, y, Size, Size);
+            context.Widget.StyleContext.RenderCheck (context.Context, x, y, Size, Size);
         }
 
         private object last_pressed_bound;
