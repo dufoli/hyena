@@ -42,4 +42,32 @@ namespace Hyena.Widgets
         {
         }
     }
+
+    [Hyena.Gui.TestModule ("Animated VBox")]
+    internal class AnimatedVBoxTestModule : Gtk.Window
+    {
+        Label label1, label2, label3;
+
+        public AnimatedVBoxTestModule () : base ("Animated VBox")
+        {
+            AnimatedVBox vbox = new AnimatedVBox ();
+            Add (vbox);
+            ShowAll ();
+
+            label1 = new Label ("First Label");
+            label2 = new Label ("Second Label");
+            label3 = new Label ("Third Label with a longer text");
+
+            vbox.PackEnd (label1, Hyena.Gui.Theatrics.Easing.Linear, Blocking.Downstage);
+            vbox.PackEnd (label2, 2000, Hyena.Gui.Theatrics.Easing.ExponentialIn, Blocking.Upstage);
+            vbox.PackEnd (label3, 5000, Hyena.Gui.Theatrics.Easing.QuadraticInOut);
+
+            GLib.Timeout.AddSeconds (10, delegate {
+                vbox.Remove (label2);
+                vbox.Remove (label1);
+                vbox.Remove (label3);
+                return false;
+            });
+        }
+    }
 }
