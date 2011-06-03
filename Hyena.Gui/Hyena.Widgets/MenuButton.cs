@@ -128,7 +128,7 @@ namespace Hyena.Widgets
 
         protected override void OnGetPreferredWidth (out int minimum_width, out int natural_width)
         {
-            size_widget.GetPreferredHeight (out minimum_width, out natural_width);
+            size_widget.GetPreferredWidth (out minimum_width, out natural_width);
         }
 
         protected override void OnSizeAllocated (Rectangle allocation)
