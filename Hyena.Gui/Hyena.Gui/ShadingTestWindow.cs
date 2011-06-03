@@ -31,6 +31,7 @@ using Gtk;
 
 namespace Hyena.Gui
 {
+    [TestModule ("Shading")]
     public class ShadingTestWindow : Window
     {
         private int steps = 16;
@@ -42,8 +43,6 @@ namespace Hyena.Gui
 
         protected override bool OnDrawn (Cairo.Context cr)
         {
-            CairoHelper.TransformToWindow (cr, this, Window);
-
             double step_width = Allocation.Width / (double)steps;
             double step_height = Allocation.Height / (double)steps;
             double h = 1.0;
