@@ -160,7 +160,7 @@ namespace Hyena.Widgets
         private void PositionMenu (Menu menu, out int x, out int y, out bool push_in)
         {
             Gtk.Requisition menu_req, nat_req;
-            menu.GetPreferredSize (menu_req, nat_req);
+            menu.GetPreferredSize (out menu_req, out nat_req);
             int monitor_num = Screen.GetMonitorAtWindow (Window);
             Gdk.Rectangle monitor = Screen.GetMonitorGeometry (monitor_num < 0 ? 0 : monitor_num);
 

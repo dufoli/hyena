@@ -113,7 +113,7 @@ namespace Hyena.Widgets
             if (child != null && child.Visible) {
                 // Add the child's width/height
                 Requisition child_requisition, nat_requisition;
-                child.GetPreferredSize (child_requisition, nat_requisition);
+                child.GetPreferredSize (out child_requisition, out nat_requisition);
                 requisition.Width = Math.Max (0, child_requisition.Width);
                 requisition.Height = child_requisition.Height;
             } else {

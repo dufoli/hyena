@@ -211,7 +211,7 @@ namespace Hyena.Widgets
 
             foreach (AnimatedWidget widget in Widgets) {
                 Requisition req, nat;
-                widget.GetPreferredSize (req, nat);
+                widget.GetPreferredSize (out req, out nat);
 
                 if (horizontal) {
                     width += req.Width;
