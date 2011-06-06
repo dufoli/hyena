@@ -409,8 +409,6 @@ namespace Hyena.Widgets
 
     }
 
-#region Test Module
-
     public class RatingAccessible : Atk.Object, Atk.Value, Atk.ValueImplementor
     {
         private RatingEntry rating;
@@ -475,6 +473,8 @@ namespace Hyena.Widgets
 
         }
     }
+
+#region Test Module
 
     [Hyena.Gui.TestModule ("Rating Entry")]
     internal class RatingEntryTestModule : Gtk.Window

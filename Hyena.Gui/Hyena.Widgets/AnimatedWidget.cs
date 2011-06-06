@@ -1,5 +1,5 @@
 //
-// AnimatedVboxActor.cs
+// AnimatedWidget.cs
 //
 // Authors:
 //   Scott Peterson <lunchtimemama@gmail.com>

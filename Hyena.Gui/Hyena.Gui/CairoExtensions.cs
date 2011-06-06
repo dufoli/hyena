@@ -69,7 +69,6 @@ namespace Hyena.Gui
         {
             Surface surface = cr.Target.CreateSimilar (cr.Target.Content, pixbuf.Width, pixbuf.Height);
             Cairo.Context surface_cr = new Context (surface);
-            //Gdk.CairoHelper.SetSourcePixbuf (surface_cr, pixbuf, 0.0, 0.0);
             Gdk.CairoHelper.SetSourcePixbuf (surface_cr, pixbuf, 0.0, 0.0);
             surface_cr.Paint ();
             ((IDisposable)surface_cr).Dispose ();
