@@ -56,8 +56,7 @@ SHAMROCK_FIND_MONO_RUNTIME
 SHAMROCK_CHECK_MONO_2_0_GAC_ASSEMBLIES([	
 	Mono.Posix
 	ICSharpCode.SharpZipLib
-])dnl FIXME:seems like cairo-sharp hasn't got .pc files yet: cairo-sharp
-
+])
 
 dnl package checks, common for all configs
 PKG_CHECK_MODULES([GTKSHARP], [gtk-sharp-3.0])
