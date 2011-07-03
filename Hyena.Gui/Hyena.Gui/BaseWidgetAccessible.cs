@@ -154,7 +154,7 @@ namespace Hyena.Gui
             } else {
                 x = 0;
                 y = 0;
-                window = widget.GdkWindow;
+                window = widget.Window;
             }
 
             int x_window, y_window;
@@ -163,7 +163,7 @@ namespace Hyena.Gui
             y += y_window;
 
             if (coordType == Atk.CoordType.Window) {
-                window = widget.GdkWindow.Toplevel;
+                window = widget.Window.Toplevel;
                 int x_toplevel, y_toplevel;
                 window.GetOrigin (out x_toplevel, out y_toplevel);
 
@@ -220,7 +220,7 @@ namespace Hyena.Gui
 
             if (coordType == CoordType.Window) {
                 int x_off, y_off;
-                widget.GdkWindow.GetOrigin (out x_off, out y_off);
+                widget.Window.GetOrigin (out x_off, out y_off);
                 x += x_off;
                 y += y_off;
 
