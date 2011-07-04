@@ -97,6 +97,11 @@ namespace Hyena.Gui
                 alpha);
         }
 
+        public static Cairo.Color GdkRGBAToCairoColor (Gdk.RGBA rgba)
+        {
+            return new Cairo.Color (rgba.Red, rgba.Green, rgba.Blue, rgba.Alpha);
+        }
+
         public static Cairo.Color RgbToColor (uint rgbColor)
         {
             return RgbaToColor ((rgbColor << 8) | 0x000000ff);
