@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using Gdk;
 using Gtk;
 
+using Hyena.Gui;
 using Hyena.Gui.Theatrics;
 
 namespace Hyena.Widgets
@@ -62,7 +63,7 @@ namespace Hyena.Widgets
         private readonly bool horizontal;
         private double percent;
         private Rectangle widget_alloc;
-        //private Pixmap canvas;
+        private Cairo.Surface surface;
 
         public AnimatedWidget (Widget widget, uint duration, Easing easing, Blocking blocking, bool horizontal)
         {
@@ -92,17 +93,22 @@ namespace Hyena.Widgets
 
         private void OnWidgetDestroyed (object sender, EventArgs args)
         {
-/*            if (!IsRealized) {
+            if (!IsRealized) {
                 return;
             }
 
-            canvas = new Pixmap (Window, widget_alloc.Width, widget_alloc.Height);
-            canvas.DrawDrawable (Style.BackgroundGC (State), Window,
-                widget_alloc.X, widget_alloc.Y, 0, 0, widget_alloc.Width, widget_alloc.Height);
+            // Copy the widget's pixels to surface, we'll use it to draw the animation
+            surface = Window.CreateSimilarSurface (Cairo.Content.ColorAlpha, widget_alloc.Width, widget_alloc.Height);
+            var cr = new Cairo.Context (surface);
+            Gdk.CairoHelper.SetSourceWindow (cr, Window, widget_alloc.X, widget_alloc.Y);
+            cr.Rectangle (0, 0, widget_alloc.Width, widget_alloc.Height);
+            cr.Fill ();
 
             if (AnimationState != AnimationState.Going) {
                 WidgetDestroyed (this, args);
-            }*/
+            }
+
+            ((IDisposable)cr).Dispose ();
         }
 
 #region Overrides
@@ -190,11 +196,15 @@ namespace Hyena.Widgets
 
         protected override bool OnDrawn (Cairo.Context cr)
         {
-/*            if (canvas != null) {
-                Window.DrawDrawable (Style.BackgroundGC (State), canvas,
-                    0, 0, widget_alloc.X, widget_alloc.Y, widget_alloc.Width, widget_alloc.Height);
+            if (surface != null) {
+                cr.Save ();
+                Gtk.CairoHelper.TransformToWindow (cr, this, Window);
+                cr.SetSource (surface);
+                cr.Rectangle (widget_alloc.X, widget_alloc.Y, widget_alloc.Width, widget_alloc.Height);
+                cr.Fill ();
+                cr.Restore ();
                 return true;
-            } else*/ {
+            } else {
                 return base.OnDrawn (cr);
             }
         }

@@ -46,28 +46,81 @@ namespace Hyena.Widgets
     [Hyena.Gui.TestModule ("Animated VBox")]
     internal class AnimatedVBoxTestModule : Gtk.Window
     {
-        Label label1, label2, label3;
+        Table tile, tile2;
+        uint timeout_id;
 
         public AnimatedVBoxTestModule () : base ("Animated VBox")
         {
             AnimatedVBox vbox = new AnimatedVBox ();
             Add (vbox);
+
+            tile = BuildWidget ("Example destroyed");
+            tile2 = BuildWidget ("Example removed");
+
+            vbox.PackEnd (tile, 3000, Hyena.Gui.Theatrics.Easing.QuadraticOut);
+            vbox.PackEnd (tile2, 3000, Hyena.Gui.Theatrics.Easing.QuadraticOut);
             ShowAll ();
 
-            label1 = new Label ("First Label");
-            label2 = new Label ("Second Label");
-            label3 = new Label ("Third Label with a longer text");
-
-            vbox.PackEnd (label1, Hyena.Gui.Theatrics.Easing.Linear, Blocking.Downstage);
-            vbox.PackEnd (label2, 2000, Hyena.Gui.Theatrics.Easing.ExponentialIn, Blocking.Upstage);
-            vbox.PackEnd (label3, 5000, Hyena.Gui.Theatrics.Easing.QuadraticInOut);
-
-            GLib.Timeout.AddSeconds (10, delegate {
-                vbox.Remove (label2);
-                vbox.Remove (label1);
-                vbox.Remove (label3);
+            timeout_id = GLib.Timeout.AddSeconds (5, delegate {
+                tile.Destroy ();
+                vbox.Remove (tile2);
                 return false;
             });
+        }
+
+        protected override bool OnDeleteEvent (Gdk.Event evnt)
+        {
+            if (timeout_id > 0) {
+                GLib.Timeout.Remove (timeout_id);
+            }
+            return base.OnDeleteEvent (evnt);
+        }
+
+
+        private Table BuildWidget (string title)
+        {
+            var tile = new Table (3, 2, false);
+
+            tile.ColumnSpacing = 5;
+            tile.RowSpacing = 2;
+
+            var title_label = new Label ();
+            title_label.Xalign = 0.0f;
+            title_label.Ellipsize = Pango.EllipsizeMode.End;
+            title_label.Markup = String.Format ("<small><b>{0}</b></small>", GLib.Markup.EscapeText (title));
+
+            var status_label = new Label ();
+            status_label.Xalign = 0.0f;
+            status_label.Ellipsize = Pango.EllipsizeMode.End;
+            status_label.Markup = "<small>Testing...</small>";
+
+            var progress_bar = new ProgressBar ();
+            progress_bar.SetSizeRequest (0, -1);
+            progress_bar.Fraction = 0.5;
+            progress_bar.Text = "Doing nothing...";
+
+            var cancel_button = new Button (new Image (Stock.Stop, IconSize.Menu));
+            cancel_button.Relief = ReliefStyle.None;
+
+            tile.Attach (title_label, 0, 3, 0, 1,
+                AttachOptions.Expand | AttachOptions.Fill,
+                AttachOptions.Expand | AttachOptions.Fill, 0, 0);
+
+            tile.Attach (status_label, 0, 3, 1, 2,
+                AttachOptions.Expand | AttachOptions.Fill,
+                AttachOptions.Expand | AttachOptions.Fill, 0, 0);
+
+            tile.Attach (progress_bar, 1, 2, 2, 3,
+                AttachOptions.Expand | AttachOptions.Fill,
+                AttachOptions.Shrink, 0, 0);
+
+            tile.Attach (cancel_button, 2, 3, 2, 3,
+                AttachOptions.Shrink | AttachOptions.Fill,
+                AttachOptions.Shrink | AttachOptions.Fill, 0, 0);
+
+            tile.ShowAll ();
+
+            return tile;
         }
     }
 }
