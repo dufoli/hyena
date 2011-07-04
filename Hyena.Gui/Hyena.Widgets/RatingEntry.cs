@@ -272,22 +272,16 @@ namespace Hyena.Widgets
 
             if (HasFrame) {
                 int y_mid = (int)Math.Round ((Allocation.Height - renderer.Height) / 2.0);
-                this.StyleContext.State = StateFlags.Normal;
-                StyleContext.RenderFrame (cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
-                StyleContext.RenderBackground (cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
-                //Gtk.Style.PaintFlatBox (Style, cr, State, ShadowType.None, this, "entry",
-                //    Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
-                this.StyleContext.State = StateFlags.Active;
-                StyleContext.RenderFrame (cr, Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
-                //Gtk.Style.PaintShadow (Style, cr, State, ShadowType.In,
-                //    this, "entry", Allocation.X, Allocation.Y + y_mid, Allocation.Width, renderer.Height);
+                StyleContext.Save ();
+                StyleContext.AddClass ("entry");
+                StyleContext.RenderBackground (cr, 0, y_mid, Allocation.Width, renderer.Height);
+                StyleContext.RenderFrame (cr, 0, y_mid, Allocation.Width, renderer.Height);
+                StyleContext.Restore ();
             }
-
-            Gdk.RGBA rgba = Parent.StyleContext.GetColor (StateFlags);
 
             CairoHelper.TransformToWindow (cr, this, Window);
             renderer.Render (cr, Allocation,
-                new Cairo.Color (rgba.Red, rgba.Green, rgba.Blue, rgba.Alpha),
+                CairoExtensions.GdkRGBAToCairoColor ( Parent.StyleContext.GetColor (StateFlags)),
                 AlwaysShowEmptyStars, PreviewOnHover && hover_value >= renderer.MinRating, hover_value,
                 State == StateType.Insensitive ? 1 : 0.90,
                 State == StateType.Insensitive ? 1 : 0.55,
