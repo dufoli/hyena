@@ -252,7 +252,6 @@ namespace Hyena.Widgets
             metrics.Dispose ();
 
             if (HasFrame) {
-				this.
                 renderer.Xpad = MarginLeft + (interior_focus ? focus_width : 0) + 2;
                 renderer.Ypad = MarginTop + (interior_focus ? focus_width : 0) + 2;
             } else {
