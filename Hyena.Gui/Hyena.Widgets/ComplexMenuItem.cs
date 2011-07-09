@@ -81,12 +81,12 @@ namespace Hyena.Widgets
                 width = Allocation.Width;
                 height = Allocation.Height;
 
-                //ShadowType shadow_type = (ShadowType)StyleGetProperty("selected-shadow-type");
+                StyleContext.Save ();
+                StyleContext.AddClass ("menuitem");
                 StyleContext.State = StateFlags.Prelight | StateFlags.Selected;
                 StyleContext.RenderFrame (args.Cr, x, y, width, height);
                 StyleContext.RenderBackground (args.Cr, x, y, width, height);
-                //Gtk.Style.PaintBox(Style, args.Cr, StateType.Prelight, shadow_type,
-                //    widget, "menuitem", x, y, width, height);
+                StyleContext.Restore ();
             } else {
 
                 args.Cr.Save ();
@@ -109,11 +109,13 @@ namespace Hyena.Widgets
                 y = Parent.Allocation.Y - widget.Allocation.Y;
                 width = Parent.Allocation.Width;
                 height = Parent.Allocation.Height;
+                
+                StyleContext.Save ();
+                StyleContext.AddClass ("menuitem");
                 StyleContext.State = StateFlags.Normal;
                 StyleContext.RenderFrame (args.Cr, x, y, width, height);
                 StyleContext.RenderBackground (args.Cr, x, y, width, height);
-                //Gtk.Style.PaintBox(Style, args.Cr, StateType.Normal, ShadowType.Out,
-                //    widget, "menu", x, y, width, height);
+                StyleContext.Restore ();
             }
         }
 
