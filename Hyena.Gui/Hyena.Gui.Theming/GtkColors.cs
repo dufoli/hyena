@@ -87,6 +87,7 @@ namespace Hyena.Gui.Theming
             RefreshColors ();
         }
 
+        [Obsolete ("Use StyleContext to take advantage of the theming infrastructure in GTK+")]
         public Cairo.Color GetWidgetColor (GtkColorClass @class, StateType state)
         {
             if (gtk_colors == null) {

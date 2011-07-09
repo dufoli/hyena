@@ -119,6 +119,7 @@ namespace Hyena.Gui
             return color;
         }
 
+        [Obsolete ("Use StyleContext to take advantage of the theming infrastructure in GTK+")]
         public static void AdaptGtkRcStyle (Widget adaptee, Type adapter)
         {
             GLib.GType type = (GLib.GType)adapter;
@@ -126,6 +127,7 @@ namespace Hyena.Gui
             AdaptGtkRcStyle (adaptee, type, path, path);
         }
 
+        [Obsolete ("Use StyleContext to take advantage of the theming infrastructure in GTK+")]
         public static void AdaptGtkRcStyle (Widget adaptee, GLib.GType adapter, string widgetPath, string classPath)
         {
             Style style = Gtk.Rc.GetStyleByPaths (adaptee.Settings, widgetPath, classPath, adapter);
