@@ -43,10 +43,8 @@ namespace Hyena.Gui.Theming
 
         public static Cairo.Color GetCairoTextMidColor (Widget widget)
         {
-            Gdk.RGBA color = widget.StyleContext.GetColor (StateFlags.Normal);
-            Cairo.Color text_color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
-            color = widget.StyleContext.GetBackgroundColor (StateFlags.Normal);
-            Cairo.Color background_color = new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha);
+            Cairo.Color text_color = CairoExtensions.GdkRGBAToCairoColor (widget.StyleContext.GetColor (StateFlags.Normal));
+            Cairo.Color background_color = CairoExtensions.GdkRGBAToCairoColor (widget.StyleContext.GetBackgroundColor (StateFlags.Normal));
             return CairoExtensions.AlphaBlend (text_color, background_color, 0.5);
         }
 

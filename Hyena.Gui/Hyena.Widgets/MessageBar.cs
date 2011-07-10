@@ -128,7 +128,7 @@ namespace Hyena.Widgets
             CairoHelper.TransformToWindow (cr, this, Window);
 
             Gdk.RGBA color = StyleContext.GetBackgroundColor (StateFlags.Normal);
-            theme.DrawFrame (cr, Allocation, new Cairo.Color (color.Red, color.Green, color.Blue, color.Alpha));
+            theme.DrawFrame (cr, Allocation, CairoExtensions.GdkRGBAToCairoColor (color));
             cr.Restore ();
             return base.OnDrawn (cr);
         }
