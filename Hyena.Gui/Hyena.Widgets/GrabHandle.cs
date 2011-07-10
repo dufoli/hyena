@@ -52,12 +52,10 @@ namespace Hyena.Widgets
             LeaveNotifyEvent += (o, a) => Inside = false;
 
             da.Drawn += (o, a) => {
-                if (da.IsDrawable) {
-                    da.StyleContext.Save ();
-                    da.StyleContext.AddClass ("pane-separator");
-                    da.StyleContext.RenderHandle (a.Cr, 0, 0, da.Allocation.Width, da.Allocation.Height);
-                    da.StyleContext.Restore ();
-                }
+                da.StyleContext.Save ();
+                da.StyleContext.AddClass ("pane-separator");
+                da.StyleContext.RenderHandle (a.Cr, 0, 0, da.Allocation.Width, da.Allocation.Height);
+                da.StyleContext.Restore ();
             };
         }
 
