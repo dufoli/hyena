@@ -153,11 +153,13 @@ namespace Hyena.Gui.Canvas
             double throbber_y = (Allocation.Height - ThrobberSize) / 2.0 - Margin.Top + throbber_r;
             double bar_w = RenderSize.Width * Value;
 
-            cr.Color = Theme.Colors.GetWidgetColor (GtkColorClass.Base, Gtk.StateType.Normal);
-            cr.Rectangle (0, 0, RenderSize.Width, RenderSize.Height);
-            cr.Fill ();
+            Theme.Widget.StyleContext.Save ();
+            Theme.Widget.StyleContext.AddClass ("entry");
+            Theme.Widget.StyleContext.RenderBackground (cr, 0, 0, RenderSize.Width, RenderSize.Height);
+            var color = CairoExtensions.GdkRGBAToCairoColor (Theme.Widget.StyleContext.GetColor (Gtk.StateFlags.Active));
+            Theme.Widget.StyleContext.Restore ();
 
-            Color color = Theme.Colors.GetWidgetColor (GtkColorClass.Dark, Gtk.StateType.Active);
+            // TODO get Dark color
             Color fill_color = CairoExtensions.ColorShade (color, 0.4);
             Color light_fill_color = CairoExtensions.ColorShade (color, 0.3);
             fill_color.A = 1.0;

@@ -178,13 +178,8 @@ namespace Hyena.Gui.Canvas
             }
 
             var cr = context.Context;
-            Foreground = new Brush (context.Theme.Colors.GetWidgetColor (
-                context.TextAsForeground ? GtkColorClass.Foreground : GtkColorClass.Text, context.State));
-
-            Brush foreground = Foreground;
-            if (!foreground.IsValid) {
-                return;
-            }
+            context.Theme.Widget.StyleContext.Save ();
+            context.Theme.Widget.StyleContext.AddClass ("entry");
 
             cr.Rectangle (0, 0, RenderSize.Width, RenderSize.Height);
             cr.Clip ();
@@ -195,8 +190,6 @@ namespace Hyena.Gui.Canvas
                 cr.PushGroup ();
             }
 
-            cr.MoveTo (text_alloc.X, text_alloc.Y);
-            Foreground.Apply (cr);
             UpdateLayout (GetText (), RenderSize.Width, RenderSize.Height, true);
             if (Hyena.PlatformDetection.IsWindows) {
               // FIXME windows; working around some unknown issue with ShowLayout; bgo#644311
@@ -206,7 +199,8 @@ namespace Hyena.Gui.Canvas
             } else {
               PangoCairoHelper.ShowLayout (cr, layout);
             }
-            cr.Fill ();
+
+            context.Theme.Widget.StyleContext.RenderLayout (cr, text_alloc.X, text_alloc.Y, layout);
 
             TooltipMarkup = layout.IsEllipsized ? last_formatted_text : null;
 
@@ -221,6 +215,7 @@ namespace Hyena.Gui.Canvas
             }
 
             cr.ResetClip ();
+            context.Theme.Widget.StyleContext.Restore ();
         }
 
         private Pango.Weight GetPangoFontWeight (FontWeight weight)

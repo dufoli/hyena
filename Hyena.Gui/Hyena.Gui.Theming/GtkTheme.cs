@@ -43,8 +43,8 @@ namespace Hyena.Gui.Theming
 
         public static Cairo.Color GetCairoTextMidColor (Widget widget)
         {
-            Cairo.Color text_color = CairoExtensions.GdkRGBAToCairoColor (widget.StyleContext.GetColor (StateFlags.Normal));
-            Cairo.Color background_color = CairoExtensions.GdkRGBAToCairoColor (widget.StyleContext.GetBackgroundColor (StateFlags.Normal));
+            Color text_color = CairoExtensions.GdkRGBAToCairoColor (widget.StyleContext.GetColor (StateFlags.Normal));
+            Color background_color = CairoExtensions.GdkRGBAToCairoColor (widget.StyleContext.GetBackgroundColor (StateFlags.Normal));
             return CairoExtensions.AlphaBlend (text_color, background_color, 0.5);
         }
 
@@ -55,9 +55,9 @@ namespace Hyena.Gui.Theming
             rule_color = CairoExtensions.ColorShade (ViewFill, 0.95);
 
             // On Windows we use Normal b/c Active incorrectly returns black (at least on XP)
-            border_color = Colors.GetWidgetColor (GtkColorClass.Border,
-              Hyena.PlatformDetection.IsWindows ? StateType.Normal : StateType.Active
-            );
+            // TODO: Check if this is still needed with GTK 3
+            border_color = CairoExtensions.GdkRGBAToCairoColor (Widget.StyleContext.GetBorderColor (
+                    Hyena.PlatformDetection.IsWindows ? StateFlags.Normal : StateFlags.Active));
         }
 
         public override void DrawPie (double fraction)
@@ -76,7 +76,8 @@ namespace Hyena.Gui.Theming
             Context.Cairo.LineTo (Context.X, Context.Y);
 
             // Fill the pie
-            Color color_a = Colors.GetWidgetColor (GtkColorClass.Background, StateType.Selected);
+            Color color_a = CairoExtensions.GdkRGBAToCairoColor (
+                Widget.StyleContext.GetBackgroundColor (StateFlags.Selected));
             Color color_b = CairoExtensions.ColorShade (color_a, 1.4);
 
             RadialGradient fill = new RadialGradient (Context.X, Context.Y, 0,
@@ -97,47 +98,7 @@ namespace Hyena.Gui.Theming
         public override void DrawArrow (Context cr, Gdk.Rectangle alloc, double rotation)
         {
             rotation -= Math.PI / 2.0;
-
-            double x1 = alloc.X;
-            double x2 = alloc.Right;
-            double x3 = alloc.X + alloc.Width / 2.0;
-            double y1 = alloc.Y;
-            double y2 = alloc.Bottom;
-
-            double cx = x3;
-            double cy = alloc.Y + alloc.Height / 2.0;
-
-            if (rotation != 0) {
-                // Rotate about the center of the arrow
-                cr.Translate (cx, cy);
-                cr.Rotate (rotation);
-                cr.Translate (-cx, -cy);
-            }
-
-            cr.LineWidth = 1.0;
-
-            bool hz = (rotation % (Math.PI / 2.0)) == 0;
-            double dx = hz ? 0 : 0.5;
-            double dy = hz ? 0.5 : 0.5;
-            cr.Translate (dx, dy);
-
-            cr.MoveTo (x1, y1);
-            cr.LineTo (x2, y1);
-            cr.LineTo (x3, y2);
-            cr.LineTo (x1, y1);
-
-            cr.Color = Colors.GetWidgetColor (GtkColorClass.Base, StateType.Normal);
-            cr.FillPreserve ();
-            cr.Color = Colors.GetWidgetColor (GtkColorClass.Text, StateType.Normal);
-            cr.Stroke ();
-
-            cr.Translate (-dx, -dy);
-
-            if (rotation != 0) {
-                cr.Translate (cx, cy);
-                cr.Rotate (-rotation);
-                cr.Translate (-cx, -cy);
-            }
+            Widget.StyleContext.RenderArrow (cr, rotation, alloc.X, alloc.Y, alloc.Width * alloc.Height);
         }
 
         public override void DrawFrameBackground (Cairo.Context cr, Gdk.Rectangle alloc, Cairo.Color color, Cairo.Pattern pattern)
@@ -221,7 +182,8 @@ namespace Hyena.Gui.Theming
 
         public override void DrawHeaderBackground (Cairo.Context cr, Gdk.Rectangle alloc)
         {
-            Cairo.Color gtk_background_color = Colors.GetWidgetColor (GtkColorClass.Background, StateType.Normal);
+            Cairo.Color gtk_background_color =
+                CairoExtensions.GdkRGBAToCairoColor (Widget.StyleContext.GetBackgroundColor (StateFlags.Normal));
             Cairo.Color light_color = CairoExtensions.ColorShade (gtk_background_color, 1.1);
             Cairo.Color dark_color = CairoExtensions.ColorShade (gtk_background_color, 0.95);
 
@@ -251,7 +213,8 @@ namespace Hyena.Gui.Theming
             double line_width = 0.7;
 
             Cairo.Color stroke_color = CairoExtensions.ColorShade (
-                Colors.GetWidgetColor (GtkColorClass.Background, StateType.Selected), 0.8);
+                CairoExtensions.GdkRGBAToCairoColor (
+                    Widget.StyleContext.GetBackgroundColor (StateFlags.Selected)), 0.8);
 
             stroke_color.A = 0.1;
             cr.Color = stroke_color;
@@ -279,7 +242,8 @@ namespace Hyena.Gui.Theming
 
         public override void DrawHeaderSeparator (Cairo.Context cr, Gdk.Rectangle alloc, int x)
         {
-            Cairo.Color gtk_background_color = Colors.GetWidgetColor (GtkColorClass.Background, StateType.Normal);
+            Cairo.Color gtk_background_color = CairoExtensions.GdkRGBAToCairoColor (
+                Widget.StyleContext.GetBackgroundColor (StateFlags.Normal));
             Cairo.Color dark_color = CairoExtensions.ColorShade (gtk_background_color, 0.80);
             Cairo.Color light_color = CairoExtensions.ColorShade (gtk_background_color, 1.1);
 

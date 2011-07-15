@@ -55,8 +55,8 @@ namespace Hyena.Data.Gui
             int x = context.Area.X + xpad + ((cell_width - Size) / 2);
             int y = context.Area.Y + ypad + ((cell_height - Size) / 2);
 
-            if (context.State == StateType.Normal && last_hover_bound == BoundObjectParent) {
-                context.State = StateType.Prelight;
+            if (context.State == StateFlags.Normal && last_hover_bound == BoundObjectParent) {
+                context.State = StateFlags.Prelight;
             }
             context.Widget.StyleContext.Save ();
             context.Widget.StyleContext.AddClass ("check");
