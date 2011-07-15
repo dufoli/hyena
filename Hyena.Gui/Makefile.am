@@ -75,7 +75,6 @@ SOURCES =  \
 	Hyena.Gui.Theatrics/SingleActorStage.cs \
 	Hyena.Gui.Theatrics/Stage.cs \
 	Hyena.Gui.Theatrics/Tests/ChoreographerTests.cs \
-	Hyena.Gui.Theming/GtkColors.cs \
 	Hyena.Gui.Theming/GtkTheme.cs \
 	Hyena.Gui.Theming/Theme.cs \
 	Hyena.Gui.Theming/ThemeContext.cs \

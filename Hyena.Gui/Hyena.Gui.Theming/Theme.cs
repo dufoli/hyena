@@ -40,7 +40,6 @@ namespace Hyena.Gui.Theming
     {
         private static Cairo.Color black = new Cairo.Color (0, 0, 0);
         private Stack<ThemeContext> contexts = new Stack<ThemeContext> ();
-        private GtkColors colors;
 
         private Cairo.Color selection_fill;
         private Cairo.Color selection_stroke;
@@ -50,22 +49,17 @@ namespace Hyena.Gui.Theming
 
         private Cairo.Color text_mid;
 
-        public GtkColors Colors {
-            get { return colors; }
-        }
-
         public Widget Widget { get; private set; }
 
-        public Theme (Widget widget) : this (widget, new GtkColors ())
-        {
-        }
-
-        public Theme (Widget widget, GtkColors colors)
+        public Theme (Widget widget)
         {
             this.Widget = widget;
-            this.colors = colors;
-            this.colors.Refreshed += delegate { OnColorsRefreshed (); };
-            this.colors.Widget = widget;
+            if (widget.IsRealized) {
+                OnColorsRefreshed ();
+            }
+
+            widget.Realized += delegate { OnColorsRefreshed (); };
+            widget.StyleUpdated += delegate { OnColorsRefreshed (); };
 
             PushContext ();
         }
