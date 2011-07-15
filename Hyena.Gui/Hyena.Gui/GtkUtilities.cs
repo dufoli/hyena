@@ -88,7 +88,7 @@ namespace Hyena.Gui
             }
         }
 
-        public static Gdk.Color ColorBlend (Gdk.Color a, Gdk.Color b)
+        public static Gdk.RGBA ColorBlend (Gdk.RGBA a, Gdk.RGBA b)
         {
             // at some point, might be nice to allow any blend?
             double blend = 0.5;
@@ -99,23 +99,18 @@ namespace Hyena.Gui
 
             double blendRatio = 1.0 - blend;
 
-            int aR = a.Red >> 8;
-            int aG = a.Green >> 8;
-            int aB = a.Blue >> 8;
-
-            int bR = b.Red >> 8;
-            int bG = b.Green >> 8;
-            int bB = b.Blue >> 8;
-
-            double mR = aR + bR;
-            double mG = aG + bG;
-            double mB = aB + bB;
+            double mR = a.Red + b.Red;
+            double mG = a.Green + b.Green;
+            double mB = a.Blue + b.Blue;
 
             double blR = mR * blendRatio;
             double blG = mG * blendRatio;
             double blB = mB * blendRatio;
 
-            Gdk.Color color = new Gdk.Color ((byte)blR, (byte)blG, (byte)blB);
+            Gdk.RGBA color = new Gdk.RGBA ();
+            color.Red = blR;
+            color.Green = blG;
+            color.Blue = blB;
             return color;
         }
 
