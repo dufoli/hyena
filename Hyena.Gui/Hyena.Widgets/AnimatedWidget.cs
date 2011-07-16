@@ -127,7 +127,7 @@ namespace Hyena.Widgets
 
             Gdk.WindowAttr attributes = new Gdk.WindowAttr ();
             attributes.WindowType = Gdk.WindowType.Child;
-            attributes.Wclass = Gdk.WindowWindowClass.Output;
+            attributes.Wclass = Gdk.WindowWindowClass.InputOutput;
             attributes.EventMask = (int)Gdk.EventMask.ExposureMask;
 
             Window = new Gdk.Window (Parent.Window, attributes, 0);

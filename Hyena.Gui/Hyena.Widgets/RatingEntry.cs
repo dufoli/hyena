@@ -159,7 +159,7 @@ namespace Hyena.Widgets
             attributes.Y = Allocation.Y;
             attributes.Width = Allocation.Width;
             attributes.Height = Allocation.Height;
-            attributes.Wclass = Gdk.WindowWindowClass.Only;
+            attributes.Wclass = Gdk.WindowWindowClass.InputOnly;
             attributes.EventMask = (int)(
                 Gdk.EventMask.PointerMotionMask |
                 Gdk.EventMask.EnterNotifyMask |

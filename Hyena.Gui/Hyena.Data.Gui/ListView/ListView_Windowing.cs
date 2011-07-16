@@ -65,7 +65,7 @@ namespace Hyena.Data.Gui
             attributes.Y = Allocation.Y;
             attributes.Width = Allocation.Width;
             attributes.Height = Allocation.Height;
-            attributes.Wclass = WindowWindowClass.Only;
+            attributes.Wclass = WindowWindowClass.InputOnly;
             attributes.EventMask = (int)(
                 EventMask.PointerMotionMask |
                 EventMask.KeyPressMask |
