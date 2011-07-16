@@ -35,29 +35,16 @@ namespace Hyena.Gui
 {
     public static class CompositeUtils
     {
-        [DllImport ("libgdk-win32-2.0-0.dll")]
-        private static extern IntPtr gdk_screen_get_rgba_visual (IntPtr screen);
-
-        [DllImport ("libgtk-win32-2.0-0.dll")]
-        private static extern void gtk_widget_input_shape_combine_mask (IntPtr raw, IntPtr shape_mask,
-            int offset_x, int offset_y);
-
-        [DllImport ("libgdk-win32-2.0-0.dll")]
-        private static extern IntPtr gdk_screen_get_rgba_colormap (IntPtr screen);
-
-        public static Visual GetRgbaVisual (Screen screen)
+        public static bool SetRgbaVisual (Widget w)
         {
-            try {
-                IntPtr raw_ret = gdk_screen_get_rgba_visual (screen.Handle);
-                Gdk.Visual ret = GLib.Object.GetObject (raw_ret) as Gdk.Visual;
-                return ret;
-            } catch {
-                Gdk.Visual visual = Gdk.Visual.GetBestWithDepth (32);
-                if (visual != null) {
-                    return visual;
-                }
+            Visual visual = w.Screen.RgbaVisual;
+
+            if (visual != null) {
+                w.Visual = visual;
+                return true;
             }
-            return null;
+
+            return false;
         }
 
         [DllImport ("libgdk-win32-2.0-0.dll")]
@@ -91,28 +78,6 @@ namespace Hyena.Gui
             }
         }
 
-        [DllImport ("libgdk-win32-2.0-0.dll")]
-        private static extern bool gdk_screen_is_composited (IntPtr screen);
-
-        public static bool IsComposited (Screen screen)
-        {
-            bool composited;
-            try {
-                composited = gdk_screen_is_composited (screen.Handle);
-            } catch (EntryPointNotFoundException) {
-                Atom atom = Atom.Intern (String.Format ("_NET_WM_CM_S{0}", screen.Number), false);
-                composited = Gdk.Selection.OwnerGetForDisplay (screen.Display, atom) != null;
-            }
-
-            // FIXME check for WINDOW_OPACITY so that we support compositing on older composite manager
-            // versions before they started supporting the real check given above
-            if (!composited) {
-                composited = CompositeUtils.SupportsHint (screen, "_NET_WM_WINDOW_OPACITY");
-            }
-
-            return composited;
-        }
-
         public static void SetWinOpacity (Gtk.Window win, double opacity)
         {
             CompositeUtils.ChangeProperty (win.Window,
@@ -122,11 +87,5 @@ namespace Hyena.Gui
                 new uint [] { (uint) (0xffffffff * opacity) }
             );
         }
-
-        /*public static void InputShapeCombineMask (Widget w, Pixmap shape_mask, int offset_x, int offset_y)
-        {
-            gtk_widget_input_shape_combine_mask (w.Handle, shape_mask == null ? IntPtr.Zero : shape_mask.Handle,
-                offset_x, offset_y);
-        }*/
     }
 }
