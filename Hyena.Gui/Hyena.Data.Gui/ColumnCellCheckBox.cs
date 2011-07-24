@@ -52,8 +52,8 @@ namespace Hyena.Data.Gui
         {
             int cell_width = (int)cellWidth - 2 * Xpad;
             int cell_height = (int)cellHeight - 2 * Ypad;
-            int x = context.Area.X + xpad + ((cell_width - Size) / 2);
-            int y = context.Area.Y + ypad + ((cell_height - Size) / 2);
+            int x = Xpad + ((cell_width - Size) / 2);
+            int y = Ypad + ((cell_height - Size) / 2);
 
             if (context.State == StateFlags.Normal && last_hover_bound == BoundObjectParent) {
                 context.State = StateFlags.Prelight;
