@@ -154,9 +154,6 @@ namespace Hyena.Gui
             return ShowUri (screen, uri, Gtk.Global.CurrentEventTime);
         }
 
-        [System.Runtime.InteropServices.DllImport ("libgtk-win32-2.0-0.dll")]
-        private static extern unsafe bool gtk_show_uri (IntPtr screen, IntPtr uri, uint timestamp, out IntPtr error);
-
         [Obsolete ("Use Gtk.Global.ShowUri() from gtk# 3.x")]
         public static bool ShowUri (Gdk.Screen screen, string uri, uint timestamp)
         {
