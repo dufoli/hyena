@@ -179,7 +179,17 @@ namespace Hyena.Gui.Canvas
 
             var cr = context.Context;
             context.Theme.Widget.StyleContext.Save ();
-            context.Theme.Widget.StyleContext.AddClass ("entry");
+            if (context.TextAsForeground) {
+                context.Theme.Widget.StyleContext.AddClass ("button");
+            } else {
+                context.Theme.Widget.StyleContext.AddClass ("entry");
+            }
+            Foreground = new Brush (context.Theme.Widget.StyleContext.GetColor (context.State));
+
+            Brush foreground = Foreground;
+            if (!foreground.IsValid) {
+                return;
+            }
 
             cr.Rectangle (0, 0, RenderSize.Width, RenderSize.Height);
             cr.Clip ();
@@ -190,6 +200,7 @@ namespace Hyena.Gui.Canvas
                 cr.PushGroup ();
             }
 
+            Foreground.Apply (cr);
             UpdateLayout (GetText (), RenderSize.Width, RenderSize.Height, true);
             if (Hyena.PlatformDetection.IsWindows) {
               // FIXME windows; working around some unknown issue with ShowLayout; bgo#644311
@@ -199,8 +210,6 @@ namespace Hyena.Gui.Canvas
             } else {
               PangoCairoHelper.ShowLayout (cr, layout);
             }
-
-            context.Theme.Widget.StyleContext.RenderLayout (cr, text_alloc.X, text_alloc.Y, layout);
 
             TooltipMarkup = layout.IsEllipsized ? last_formatted_text : null;
 

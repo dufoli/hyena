@@ -53,6 +53,10 @@ namespace Hyena.Gui.Canvas
         {
         }
 
+        public Brush (Gdk.RGBA rgba) : this (CairoExtensions.GdkRGBAToCairoColor (rgba))
+        {
+        }
+
         public Brush (Cairo.Color color)
         {
             this.color = color;
