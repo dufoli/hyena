@@ -131,6 +131,7 @@ namespace Hyena.Data.Gui
                 OnMeasure ();
             }
             // treview style
+            StyleContext.Save ();
             StyleContext.AddClass ("view");
 
             StyleContext.RenderBackground (cr, Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
@@ -138,10 +139,7 @@ namespace Hyena.Data.Gui
             // FIXME: ViewLayout will never be null in the future but we'll need
             // to deterministically render a header somehow...
             if (header_visible && ViewLayout == null && column_controller != null) {
-                StyleContext.AddRegion ("column-header", RegionFlags.First);
-                //TODO check flags
                 PaintHeader (cr);
-                StyleContext.RemoveRegion ("column-header");
             }
 
 
@@ -158,6 +156,7 @@ namespace Hyena.Data.Gui
             StyleContext.RenderFrame (cr, Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
 
             PaintDraggingColumn (cr);
+            StyleContext.Restore ();
 
             return true;
         }
