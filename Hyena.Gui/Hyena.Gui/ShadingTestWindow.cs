@@ -53,8 +53,8 @@ namespace Hyena.Gui
                     double bg_b = (double)(i / 255.0);
                     double fg_b = 1.0 - bg_b;
 
-                    double x = Allocation.X + xi * step_width;
-                    double y = Allocation.Y + yi * step_height;
+                    double x = xi * step_width;
+                    double y = yi * step_height;
 
                     cr.Rectangle (x, y, step_width, step_height);
                     cr.Color = CairoExtensions.ColorFromHsb (h, s, bg_b);
