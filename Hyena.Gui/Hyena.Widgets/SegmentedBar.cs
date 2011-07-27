@@ -322,14 +322,12 @@ namespace Hyena.Widgets
                 return base.OnDrawn (cr);
             }
 
-            CairoHelper.TransformToWindow (cr, this, Window);
-
             if (reflect) {
                 CairoExtensions.PushGroup (cr);
             }
 
             cr.Operator = Operator.Over;
-            cr.Translate (Allocation.X + h_padding, Allocation.Y);
+            cr.Translate (h_padding, 0);
             cr.Rectangle (0, 0, Allocation.Width - h_padding, Math.Max (2 * bar_height,
                 bar_height + bar_label_spacing + layout_height));
             cr.Clip ();
@@ -371,9 +369,8 @@ namespace Hyena.Widgets
             }
 
             if (show_labels) {
-                cr.Translate ((reflect ? Allocation.X : -h_padding) + (Allocation.Width - layout_width) / 2,
-                     (reflect ? Allocation.Y : 0) + bar_height + bar_label_spacing);
-
+                cr.Translate ((reflect ? 0 : -h_padding) + (Allocation.Width - layout_width) / 2,
+                     (reflect ? 0 : 0) + bar_height + bar_label_spacing);
                 RenderLabels (cr);
             }
 
