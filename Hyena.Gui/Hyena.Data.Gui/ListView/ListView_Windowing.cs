@@ -121,7 +121,7 @@ namespace Hyena.Data.Gui
                 return;
             }
 
-            header_rendering_alloc = allocation;
+            header_rendering_alloc = new Gdk.Rectangle (0, 0, allocation.Width, allocation.Height);
             header_rendering_alloc.Height = HeaderHeight;
 
             list_rendering_alloc.X = header_rendering_alloc.X + Theme.TotalBorderWidth;
@@ -134,10 +134,8 @@ namespace Hyena.Data.Gui
             header_interaction_alloc.X = list_rendering_alloc.X;
             header_interaction_alloc.Width = list_rendering_alloc.Width;
             header_interaction_alloc.Height += Theme.BorderWidth;
-            header_interaction_alloc.Offset (-allocation.X, -allocation.Y);
 
             list_interaction_alloc = list_rendering_alloc;
-            list_interaction_alloc.Offset (-allocation.X, -allocation.Y);
 
             header_width = header_interaction_alloc.Width;
         }

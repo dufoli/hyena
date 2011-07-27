@@ -193,7 +193,7 @@ namespace Hyena.Data.Gui
             }
 
             if (pressed_column_is_dragging && pressed_column_index >= 0) {
-                cell_area.X = pressed_column_x_drag + Allocation.X - HadjustmentValue;
+                cell_area.X = pressed_column_x_drag - HadjustmentValue;
                 cell_area.Width = column_cache[pressed_column_index].Width;
                 PaintHeaderCell (cr, cell_area, pressed_column_index, true, ref have_drawn_separator);
             }
@@ -478,7 +478,7 @@ namespace Hyena.Data.Gui
 
             CachedColumn column = column_cache[pressed_column_index];
 
-            int x = pressed_column_x_drag + Allocation.X + 1 - HadjustmentValue;
+            int x = pressed_column_x_drag + 1 - HadjustmentValue;
 
             StyleContext.Save ();
             StyleContext.AddClass ("entry");
