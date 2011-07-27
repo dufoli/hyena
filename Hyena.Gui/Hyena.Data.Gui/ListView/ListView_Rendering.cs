@@ -134,7 +134,7 @@ namespace Hyena.Data.Gui
             StyleContext.Save ();
             StyleContext.AddClass ("view");
 
-            StyleContext.RenderBackground (cr, Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
+            StyleContext.RenderBackground (cr, 0, 0, Allocation.Width, Allocation.Height);
 
             // FIXME: ViewLayout will never be null in the future but we'll need
             // to deterministically render a header somehow...
@@ -147,17 +147,16 @@ namespace Hyena.Data.Gui
                 // FIXME: ViewLayout will never be null in
                 // the future, PaintList will go away
                 if (ViewLayout == null) {
-                    PaintList (cr, Allocation);
+                    PaintList (cr, new Gdk.Rectangle (0, 0, Allocation.Width, Allocation.Height));
                 } else {
-                    PaintView (cr, (Rect)Allocation);
+                    PaintView (cr, new Rect (0.0, 0.0, Allocation.Width, Allocation.Height));
                 }
             }
 
-            StyleContext.RenderFrame (cr, Allocation.X, Allocation.Y, Allocation.Width, Allocation.Height);
+            StyleContext.RenderFrame (cr, 0, 0, Allocation.Width, Allocation.Height);
 
             PaintDraggingColumn (cr);
             StyleContext.Restore ();
-
             return true;
         }
 
@@ -167,7 +166,7 @@ namespace Hyena.Data.Gui
         {
             Rectangle clip = header_rendering_alloc;
             clip.Height += Theme.BorderWidth;
-            clip.Intersect (Allocation);
+            clip.Intersect (new Gdk.Rectangle (0, 0, Allocation.Width, Allocation.Height));
             cr.Rectangle (clip.X, clip.Y, clip.Width, clip.Height);
             cr.Clip ();
 
