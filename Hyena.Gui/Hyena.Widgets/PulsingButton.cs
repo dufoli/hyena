@@ -88,11 +88,8 @@ namespace Hyena.Widgets
                 return base.OnDrawn (cr);
             }
 
-            cr.Save ();
-            CairoHelper.TransformToWindow (cr, this, Window);
-
-            double x = Allocation.X + Allocation.Width / 2;
-            double y = Allocation.Y + Allocation.Height / 2;
+            double x = Allocation.Width / 2;
+            double y = Allocation.Height / 2;
             double r = Math.Min (Allocation.Width, Allocation.Height) / 2;
             double alpha = Choreographer.Compose (pulsator.Percent, Easing.Sine);
 
@@ -110,7 +107,6 @@ namespace Hyena.Widgets
             cr.Fill ();
             fill.Destroy ();
 
-            cr.Restore ();
             return base.OnDrawn (cr);
         }
 
