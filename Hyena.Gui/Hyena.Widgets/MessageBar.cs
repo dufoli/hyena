@@ -124,12 +124,8 @@ namespace Hyena.Widgets
 
         protected override bool OnDrawn (Cairo.Context cr)
         {
-            cr.Save ();
-            CairoHelper.TransformToWindow (cr, this, Window);
-
             Gdk.RGBA color = StyleContext.GetBackgroundColor (StateFlags.Normal);
-            theme.DrawFrame (cr, Allocation, CairoExtensions.GdkRGBAToCairoColor (color));
-            cr.Restore ();
+            theme.DrawFrame (cr, new Gdk.Rectangle (0, 0, Allocation.Width, Allocation.Height), CairoExtensions.GdkRGBAToCairoColor (color));
             return base.OnDrawn (cr);
         }
 
