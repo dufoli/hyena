@@ -65,15 +65,16 @@ namespace Hyena.Widgets
         }
 
         [GLib.ConnectBefore]
-        private void OnDrawn(object o, DrawnArgs args)
+        private void OnDrawn (object o, DrawnArgs args)
         {
             // NOTE: This is a little insane, but it allows packing of EventBox based widgets
             // into a GtkMenuItem without breaking the theme (leaving an unstyled void in the item).
             // This method is called before the EventBox child does its drawing and the background
             // is filled in with the proper style.
-
             int x, y, width, height;
             Widget widget = (Widget)o;
+            args.Cr.Save ();
+            CairoHelper.TransformToWindow (args.Cr, widget, Window);
 
             if(IsSelected) {
                 x = Allocation.X - widget.Allocation.X;
@@ -90,7 +91,6 @@ namespace Hyena.Widgets
             } else {
 
                 args.Cr.Save ();
-
                 var color = Parent.StyleContext.GetBackgroundColor (StateFlags.Normal);
                 // Fill only the visible area in solid color, to be most efficient
                 args.Cr.SetSourceRGB (color.Red, color.Green, color.Blue);
@@ -117,6 +117,7 @@ namespace Hyena.Widgets
                 StyleContext.RenderBackground (args.Cr, x, y, width, height);
                 StyleContext.Restore ();
             }
+            args.Cr.Restore ();
         }
 
         protected override void OnSelected()
