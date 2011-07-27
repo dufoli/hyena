@@ -106,8 +106,8 @@ namespace Hyena.Widgets
                 // Center the text vertically
                 int lw, lh;
                 layout.GetPixelSize (out lw, out lh);
-                int y = Allocation.Y + (Allocation.Height - lh) / 2;
-                
+                int y = (Allocation.Height - lh) / 2;
+
                 //TODO include in a utils class or find one in gtk
                 switch (State) {
                     case StateType.Active:
@@ -133,9 +133,10 @@ namespace Hyena.Widgets
                     break;
                 }
 
-                StyleContext.RenderLayout (cr, Allocation.X, y, layout);
+                StyleContext.RenderLayout (cr, 0, y, layout);
                 //Gtk.Style.PaintLayout (Style, cr, State, false,
                 //    this, null, Allocation.X, y, layout);
+                cr.Restore ();
             }
 
             return true;
