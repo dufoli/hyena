@@ -279,8 +279,7 @@ namespace Hyena.Widgets
                 StyleContext.Restore ();
             }
 
-            CairoHelper.TransformToWindow (cr, this, Window);
-            renderer.Render (cr, Allocation,
+            renderer.Render (cr, new Gdk.Rectangle (0, 0, Allocation.Width, Allocation.Height),
                 CairoExtensions.GdkRGBAToCairoColor ( Parent.StyleContext.GetColor (StateFlags)),
                 AlwaysShowEmptyStars, PreviewOnHover && hover_value >= renderer.MinRating, hover_value,
                 State == StateType.Insensitive ? 1 : 0.90,
