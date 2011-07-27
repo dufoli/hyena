@@ -83,12 +83,12 @@ namespace Hyena.Gui.Theming
             protected override bool OnDrawn (Cairo.Context cr)
             {
                 var alloc = new Gdk.Rectangle () {
-                    X = Allocation.X,
-                    Y = Allocation.Y,
+                    X = 0,
+                    Y = 0,
                     Width = Allocation.Width,
                     Height = Allocation.Height
                 };
-                CairoHelper.TransformToWindow (cr, this, Window);
+
                 theme.DrawListBackground (cr, alloc, true);
                 theme.DrawFrameBorder (cr, alloc);
                 return true;
